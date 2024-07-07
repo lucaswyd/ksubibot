@@ -348,7 +348,7 @@ const GetVersion = require('./utils/version');
 
     const client = new FNclient(clientOptions);
     await client.login();
-    console.log(`[LOGS] Logged in as ${client.user.self.displayName}`);
+    console.log(`[LOGS] Logged in as ${client.user.displayName}`);
     const fnbrclient = client
     client.setStatus(bot_invite_status, bot_invite_onlinetype)
     await client.party.me.setOutfit(cid);
