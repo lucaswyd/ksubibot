@@ -421,7 +421,7 @@ const GetVersion = require('./utils/version');
                 discordlog("[Command] unadd:", `**${unadduser}** has been unadded!`, 0x00FF00, interaction)
 
             } else if (commandName === 'friends') {
-                const friendList = fnbrclient.friend.list;
+                const friendList = fnbrclient.friends;
                 let friendNames = [];
                 friendList.forEach((friend) => {
                     if (friend && friend._displayName) {
