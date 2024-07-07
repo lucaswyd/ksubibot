@@ -937,7 +937,7 @@ const GetVersion = require('./utils/version');
     //  client.on('party:member:message', (m) => handleCommand(m, m.author));
 
     client.on("party:member:updated", async (Member) => {
-        if (Member.id == client.user.id) {
+        if (Member.id == client.user.self.id) {
             return;
         }
 
