@@ -48,8 +48,11 @@ const displayName = nconf.get("logs:name")
 const express = require("express");
 const path = require('path');
 const app = express()
-const { Client: Dclient, Message, MessageEmbed, Constants } = require("discord.js");
-const dclient = new Dclient({ intents: ["GUILDS", "GUILD_MESSAGES"] });
+const { Client: Dclient, GatewayIntentBits, Partials, EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
+const dclient = new Dclient({
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+    partials: [Partials.Channel]
+});
 
 // fuck polynite api lol
 async function calcChecksum(ticketPayload, signature) {
@@ -90,197 +93,209 @@ fs.readFile('cosmetics.json', 'utf8', (err, data) => {
 });
 
 function discordlog(title, content, color, interaction) {
-    const logs = new MessageEmbed()
+    const logs = new EmbedBuilder()
         .setColor(color)
         .setTitle(title)
-        .setDescription(content)
+        .setDescription(content);
     const channel = dclient.channels.cache.get(logchannel);
     if (interaction) interaction.reply({ embeds: [logs] });
     else channel.send({ embeds: [logs] });
 }
 
 dclient.once('ready', () => {
-    console.log("[DISCORD] client is online!")
+    console.log("[DISCORD] client is online!");
     if (dologs === true) {
-        discordlog("Bot status:", `${displayName} is now online!`, 0x00FF00)
-
+        discordlog("Bot status:", `${displayName} is now online!`, 0x00FF00);
     } else {
-        console.log("[LOGS] disabled.")
+        console.log("[LOGS] disabled.");
     }
 
     dclient.user.setActivity(discord_status, { type: discord_status_type });
 
-    // let commands = dclient.application?.commands
+    const commands = dclient.application?.commands;
 
-    // commands?.create({
-    //   name: 'cosmetics',
-    //   description: 'update cosmetics json file',
-    // })
+    commands?.create({
+        name: 'cosmetics',
+        description: 'update cosmetics json file',
+    });
 
-    // commands?.create({
-    //   name: "friends",
-    //   description: "Shows current friend list (displaynames)",
-    // })
+    commands?.create({
+        name: "friends",
+        description: "Shows current friend list (displaynames)",
+    });
 
-    // commands?.create({
-    //   name: "status",
-    //   description: "just SENDS the STATUS!",
-    // })
+    commands?.create({
+        name: "status",
+        description: "just SENDS the STATUS!",
+    });
 
-    // commands?.create({
-    //   name: 'add',
-    //   description: 'adds a user',
-    //   options: [
-    //     {
-    //       name: "user",
-    //       description: 'user 2 add',
-    //       required: true,
-    //       type: Constants.ApplicationCommandOptionTypes.STRING
-    //     }
-    //   ]
-    // })
-    // commands?.create({
-    //   name: 'unadd',
-    //   description: "user to unadd",
-    //   options: [
-    //     {
-    //       name: 'usertounadd',
-    //       description: "user to unadd",
-    //       type: Constants.ApplicationCommandOptionTypes.STRING,
-    //       required: true
-    //     }
-    //   ]
-    // })
-    // commands?.create({
-    //   name: 'playlist',
-    //   description: 'sets the current playlist if the bot is party leader',
-    //   options: [
-    //     {
-    //       name: 'playlist',
-    //       description: 'sets the party playlist',
-    //       type: Constants.ApplicationCommandOptionTypes.STRING,
-    //       required: true
-    //     }
-    //   ]
-    // })
-    // commands?.create({
-    //   name: 'stoptimer',
-    //   description: 'stops the setTimeout function aka the party timer'
-    // })
-    // commands?.create({
-    //   name: 'members',
-    //   description: "show current party members of the bot's lobby"
-    // })
-    // commands?.create({
-    //   name: 'setemote',
-    //   description: 'sets the clients emote with an id',
-    //   options: [
-    //     {
-    //       name: 'emotename',
-    //       description: 'name of the emote',
-    //       required: true,
-    //       type: Constants.ApplicationCommandOptionTypes.STRING
-    //     }
-    //   ]
-    // })
-    // commands?.create({
-    //   name: 'setoutfit',
-    //   description: 'sets an outfit with an id',
-    //   options: [
-    //     {
-    //       name: 'skinname',
-    //       description: 'name of the skin',
-    //       type: Constants.ApplicationCommandOptionTypes.STRING
-    //     }
-    //   ]
-    // })
-    // commands?.create({
-    //   name: "restartfnclient",
-    //   description: "restart"
-    // })
-    // commands?.create({
-    //   name: 'restartall',
-    //   description: 'restarts all clients'
-    // })
-    // commands?.create({
-    //   name: 'leaveparty',
-    //   description: "leaves the current party"
-    // })
-    // commands?.create({
-    //   name: 'sendpartychatmessage',
-    //   description: "sends a message to the fortnite party chat!",
-    //   options: [
-    //     {
-    //       name: 'message',
-    //       description: 'the message to send!',
-    //       type: Constants.ApplicationCommandOptionTypes.STRING,
-    //       required: true
-    //     }
-    //   ]
-    // })
-    // commands?.create({
-    //   name: 'level',
-    //   description: 'sets the clients level',
-    //   options: [
-    //     {
-    //       name: 'level',
-    //       description: 'the level to set',
-    //       type: Constants.ApplicationCommandOptionTypes.NUMBER,
-    //       required: true
-    //     }
-    //   ]
-    // })
-    // commands?.create({
-    //   name: 'sitout',
-    //   description: 'sets the siting out state',
-    //   options: [
-    //     {
-    //       name: 'sitingout',
-    //       description: 'sets the sitingout state',
-    //       required: true,
-    //       type: Constants.ApplicationCommandOptionTypes.BOOLEAN
-    //     }
-    //   ]
-    // })
-    // commands?.create({
-    //   name: 'readystate',
-    //   description: 'sets the bots ready state',
-    //   options: [
-    //     {
-    //       name: 'state',
-    //       description: 'the state of the ready option',
-    //       required: true,
-    //       type: Constants.ApplicationCommandOptionTypes.BOOLEAN
-    //     }
-    //   ]
-    // })
-    // commands?.create({
-    //   name: 'block',
-    //   description: 'Blocks a user',
-    //   options: [
-    //     {
-    //       name: "usertoblock",
-    //       description: "Displayname of the user to block",
-    //       required: true,
-    //       type: Constants.ApplicationCommandOptionTypes.STRING
-    //     }
-    //   ]
-    // })
+    commands?.create({
+        name: 'add',
+        description: 'adds a user',
+        options: [
+            {
+                name: "user",
+                description: 'user to add',
+                required: true,
+                type: ApplicationCommandOptionType.String,
+            }
+        ],
+    });
 
-    // commands?.create({
-    //   name: 'unblock',
-    //   description: 'unblocks a user',
-    //   options: [
-    //     {
-    //       name: "usertounblock",
-    //       description: "Displayname of the user to unblock",
-    //       required: true,
-    //       type: Constants.ApplicationCommandOptionTypes.STRING
-    //     }
-    //   ]
-    // })
+    commands?.create({
+        name: 'unadd',
+        description: "user to unadd",
+        options: [
+            {
+                name: 'usertounadd',
+                description: "user to unadd",
+                type: ApplicationCommandOptionType.String,
+                required: true,
+            }
+        ],
+    });
+
+    commands?.create({
+        name: 'playlist',
+        description: 'sets the current playlist if the bot is party leader',
+        options: [
+            {
+                name: 'playlist',
+                description: 'sets the party playlist',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+            }
+        ],
+    });
+
+    commands?.create({
+        name: 'stoptimer',
+        description: 'stops the setTimeout function aka the party timer',
+    });
+
+    commands?.create({
+        name: 'members',
+        description: "show current party members of the bot's lobby",
+    });
+
+    commands?.create({
+        name: 'setemote',
+        description: 'sets the clients emote with an id',
+        options: [
+            {
+                name: 'emotename',
+                description: 'name of the emote',
+                required: true,
+                type: ApplicationCommandOptionType.String,
+            }
+        ],
+    });
+
+    commands?.create({
+        name: 'setoutfit',
+        description: 'sets an outfit with an id',
+        options: [
+            {
+                name: 'skinname',
+                description: 'name of the skin',
+                type: ApplicationCommandOptionType.String,
+            }
+        ],
+    });
+
+    commands?.create({
+        name: "restartfnclient",
+        description: "restart",
+    });
+
+    commands?.create({
+        name: 'restartall',
+        description: 'restarts all clients',
+    });
+
+    commands?.create({
+        name: 'leaveparty',
+        description: "leaves the current party",
+    });
+
+    commands?.create({
+        name: 'sendpartychatmessage',
+        description: "sends a message to the fortnite party chat!",
+        options: [
+            {
+                name: 'message',
+                description: 'the message to send!',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+            }
+        ],
+    });
+
+    commands?.create({
+        name: 'level',
+        description: 'sets the clients level',
+        options: [
+            {
+                name: 'level',
+                description: 'the level to set',
+                type: ApplicationCommandOptionType.Number,
+                required: true,
+            }
+        ],
+    });
+
+    commands?.create({
+        name: 'sitout',
+        description: 'sets the sitting out state',
+        options: [
+            {
+                name: 'sittingout',
+                description: 'sets the sitting out state',
+                required: true,
+                type: ApplicationCommandOptionType.Boolean,
+            }
+        ],
+    });
+
+    commands?.create({
+        name: 'readystate',
+        description: 'sets the bots ready state',
+        options: [
+            {
+                name: 'state',
+                description: 'the state of the ready option',
+                required: true,
+                type: ApplicationCommandOptionType.Boolean,
+            }
+        ],
+    });
+
+    commands?.create({
+        name: 'block',
+        description: 'Blocks a user',
+        options: [
+            {
+                name: "usertoblock",
+                description: "Displayname of the user to block",
+                required: true,
+                type: ApplicationCommandOptionType.String,
+            }
+        ],
+    });
+
+    commands?.create({
+        name: 'unblock',
+        description: 'unblocks a user',
+        options: [
+            {
+                name: "usertounblock",
+                description: "Displayname of the user to unblock",
+                required: true,
+                type: ApplicationCommandOptionType.String,
+            }
+        ],
+    });
 });
-
 
 app.get('/', (req, res) => {
     res.send(web_message)
@@ -333,7 +348,7 @@ const GetVersion = require('./utils/version');
 
     const client = new FNclient(clientOptions);
     await client.login();
-    console.log(`[LOGS] Logged in as ${client.user.displayName}`);
+    console.log(`[LOGS] Logged in as ${client.user.self.displayName}`);
     const fnbrclient = client
     client.setStatus(bot_invite_status, bot_invite_onlinetype)
     await client.party.me.setOutfit(cid);
@@ -406,14 +421,16 @@ const GetVersion = require('./utils/version');
                 discordlog("[Command] unadd:", `**${unadduser}** has been unadded!`, 0x00FF00, interaction)
 
             } else if (commandName === 'friends') {
-                let friendList = fnbrclient.friends;
-                let friendNames = '';
-
+                const friendList = fnbrclient.friend.list;
+                let friendNames = [];
                 friendList.forEach((friend) => {
-                    friendNames += `${friend.displayName}\n`;
+                    if (friend && friend._displayName) {
+                        friendNames.push(friend._displayName);
+                    }
                 });
+                let friendNamesString = friendNames.join(',').replace(/,/g, '\n');
 
-                discordlog("[Command] Friends list:", `**${friendNames}**`, 0x00FF00, interaction)
+                discordlog("[Command] Friends list:", `**${friendNamesString}**`, 0x00FF00, interaction)
 
             } else if (commandName === 'playlist') {
                 const setplaylist = options.getString('playlist')
@@ -702,9 +719,9 @@ const GetVersion = require('./utils/version');
                 }
 
                 const hash = await calcChecksum(payload, signature);
-              
+
                 console.log(ticket.payload, ticket.signature, hash)
-              
+
                 var MMSAuth = [
                     "Epic-Signed",
                     ticket.ticketType,
