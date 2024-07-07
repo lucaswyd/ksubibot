@@ -348,7 +348,7 @@ const GetVersion = require('./utils/version');
 
     const client = new FNclient(clientOptions);
     await client.login();
-    console.log(`[LOGS] Logged in as ${client.user.displayName}`);
+    console.log(`[LOGS] Logged in as ${client.user.self.displayName}`);
     const fnbrclient = client
     client.setStatus(bot_invite_status, bot_invite_onlinetype)
     await client.party.me.setOutfit(cid);
@@ -421,11 +421,11 @@ const GetVersion = require('./utils/version');
                 discordlog("[Command] unadd:", `**${unadduser}** has been unadded!`, 0x00FF00, interaction)
 
             } else if (commandName === 'friends') {
-                const friendList = fnbrclient.friends;
+                const friendList = fnbrclient.friend.list;
                 let friendNames = [];
                 friendList.forEach((friend) => {
-                    if (friend && friend._displayName) {
-                        friendNames.push(friend._displayName);
+                    if (friend && friend.displayName) {
+                        friendNames.push(friend.displayName);
                     }
                 });
                 let friendNamesString = friendNames.join(',').replace(/,/g, '\n');
@@ -685,11 +685,12 @@ const GetVersion = require('./utils/version');
                     }
                 });
 
-                const token = client.auth.auths.get("fortnite").token;
+                const token = client.auth.sessions.get("fortnite").accessToken;
+                console.log(token)
 
                 const TicketRequest = (
                     await axios.get(
-                        `https://fortnite-public-service-prod11.ol.epicgames.com/fortnite/api/game/v2/matchmakingservice/ticket/player/${client.user.id}?${query}`,
+                        `https://fortnite-public-service-prod11.ol.epicgames.com/fortnite/api/game/v2/matchmakingservice/ticket/player/${client.user.self.id}?${query}`,
                         {
                             headers: {
                                 Accept: 'application/json',
@@ -902,7 +903,7 @@ const GetVersion = require('./utils/version');
                 message.reply("Fortnite Client Is Restarting!")
                 client.restart()
             } else if (command === 'friends' || command === 'frds') {
-                let friendList = fnbrclient.friends;
+                let friendList = fnbrclient.friend.list;
                 let friendNames = '';
 
                 friendList.forEach((friend) => {
