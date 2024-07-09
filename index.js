@@ -417,9 +417,13 @@ const GetVersion = require('./utils/version');
                 }
             } else if (commandName === 'unadd') {
                 const unadduser = options.getString('usertounadd')
-                fnbrclient.friend.remove(unadduser)
-                discordlog("[Command] unadd:", `**${unadduser}** has been unadded!`, 0x00FF00, interaction)
-
+                try {
+                    fnbrclient.friend.remove(unadduser)
+                    discordlog("[Command] unadd:", `**${unadduser}** has been unadded!`, 0x00FF00, interaction)
+                } catch (err) {
+                    discordlog("[Command] unadd error:", `**${unadduser}** not found!`, 0x880800, interaction)
+                    console.error(err)
+                }
             } else if (commandName === 'friends') {
                 const friendList = fnbrclient.friend.list;
                 let friendNames = [];
@@ -897,8 +901,13 @@ const GetVersion = require('./utils/version');
                 client.friend.add(content)
                 message.reply(`${content} Has been sent a friend request!`)
             } else if (command === 'unadd') {
-                client.friend.remove(content)
-                message.reply(`${content} has been unadded!`)
+                try {
+                    client.friend.remove(content)
+                    message.reply(`${content} has been unadded!`)
+                } catch (err) {
+                    message.reply(`Error: ${content} not found!`)
+                    console.error(err)
+                }
             } else if (command === 'restartclient') {
                 message.reply("Fortnite Client Is Restarting!")
                 client.restart()
