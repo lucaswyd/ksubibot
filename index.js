@@ -441,7 +441,7 @@ const GetVersion = require('./utils/version');
                 let friendNames = [];
                 friendList.forEach((friend) => {
                     if (friend && friend.displayName) {
-                        friendNames.push(`Name: ${friend.displayName} | ID ${friend.id}`);
+                        friendNames.push(`Name: ${friend.displayName} -> ID: ${friend.id}`);
                     }
                 });
                 let friendNamesString = friendNames.join(',').replace(/,/g, '\n');
@@ -921,7 +921,7 @@ const GetVersion = require('./utils/version');
                         console.log(err)
                     }
                 }
-            }  else if (command === 'unadd') {
+            } else if (command === 'unadd') {
                 try {
                     await client.friend.remove(content)
                     message.reply(`${content} has been unadded!`)
@@ -941,7 +941,7 @@ const GetVersion = require('./utils/version');
                 let friendNames = '';
 
                 friendList.forEach((friend) => {
-                    friendNames += `Name: ${friend.displayName} | ID ${friend.id}\n`;
+                    friendNames += `Name: ${friend.displayName} -> ID: ${friend.id}\n`;
                 });
 
                 message.reply(`Friend list:\n${friendNames}`)
