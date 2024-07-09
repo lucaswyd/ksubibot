@@ -412,12 +412,12 @@ const GetVersion = require('./utils/version');
                     discordlog('[Command] add:', 'No user provided', 0x880800, interaction)
                 } else {
 
-                    fnbrclient.addFriend(user)
+                    fnbrclient.friend.add(user)
                     discordlog("[Command] user:", `**${user}** has been sent a friend request`, 0x00FF00, interaction)
                 }
             } else if (commandName === 'unadd') {
                 const unadduser = options.getString('usertounadd')
-                fnbrclient.removeFriend(unadduser)
+                fnbrclient.friend.remove(unadduser)
                 discordlog("[Command] unadd:", `**${unadduser}** has been unadded!`, 0x00FF00, interaction)
 
             } else if (commandName === 'friends') {
@@ -894,10 +894,10 @@ const GetVersion = require('./utils/version');
             } else if (command === 'level') {
                 client.party.me.setLevel(parseInt(content, 10));
             } else if (command === 'add') {
-                client.addFriend(content)
+                client.friend.add(content)
                 message.reply(`${content} Has been sent a friend request!`)
             } else if (command === 'unadd') {
-                client.removeFriend(content)
+                client.friend.remove(content)
                 message.reply(`${content} has been unadded!`)
             } else if (command === 'restartclient') {
                 message.reply("Fortnite Client Is Restarting!")
