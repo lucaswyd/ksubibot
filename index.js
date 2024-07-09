@@ -407,22 +407,34 @@ const GetVersion = require('./utils/version');
                 discordlog("[Command] Status:", `Shit's Working!`, 0x00FF00, interaction)
 
             } else if (commandName === 'add') {
-                const user = options.getString('user') || null
+                const user = options.getString('user') || null;
                 if (user === null) {
-                    discordlog('[Command] add:', 'No user provided', 0x880800, interaction)
+                    discordlog('[Command] add:', 'No user provided', 0x880800, interaction);
                 } else {
-
-                    fnbrclient.friend.add(user)
-                    discordlog("[Command] user:", `**${user}** has been sent a friend request`, 0x00FF00, interaction)
+                    try {
+                        await fnbrclient.friend.add(user);
+                        discordlog("[Command] add:", `**${user}** has been sent a friend request`, 0x00FF00, interaction);
+                    } catch (err) {
+                        if (err.message.includes("already a friend")) {
+                            discordlog("[Command] add error:", `**${user}** is already your friend!`, 0x880800, interaction);
+                        } else {
+                            discordlog("[Command] add error:", `An error occurred while trying to send a friend request to **${user}**.`, 0x880800, interaction);
+                        }
+                        console.error(err);
+                    }
                 }
             } else if (commandName === 'unadd') {
-                const unadduser = options.getString('usertounadd')
+                const unadduser = options.getString('usertounadd');
                 try {
-                    fnbrclient.friend.remove(unadduser)
-                    discordlog("[Command] unadd:", `**${unadduser}** has been unadded!`, 0x00FF00, interaction)
+                    await fnbrclient.friend.remove(unadduser);
+                    discordlog("[Command] unadd:", `**${unadduser}** has been unadded!`, 0x00FF00, interaction);
                 } catch (err) {
-                    discordlog("[Command] unadd error:", `**${unadduser}** not found!`, 0x880800, interaction)
-                    console.error(err)
+                    if (err.message.includes("The friend") && err.message.includes("does not exist")) {
+                        discordlog("[Command] unadd error:", `**${unadduser}** not found!`, 0x880800, interaction);
+                    } else {
+                        discordlog("[Command] unadd error:", `An error occurred while trying to unadd **${unadduser}**.`, 0x880800, interaction);
+                    }
+                    console.error(err);
                 }
             } else if (commandName === 'friends') {
                 const friendList = fnbrclient.friend.list;
@@ -862,7 +874,7 @@ const GetVersion = require('./utils/version');
         }
     })
 
-    const handleCommand = (message, sender) => {
+    const handleCommand = async (message, sender) => {
 
         console.log(`${sender.displayName}: ${message.content}`);
         if (!message.content.startsWith('!')) return;
@@ -898,15 +910,28 @@ const GetVersion = require('./utils/version');
             } else if (command === 'level') {
                 client.party.me.setLevel(parseInt(content, 10));
             } else if (command === 'add') {
-                client.friend.add(content)
-                message.reply(`${content} Has been sent a friend request!`)
-            } else if (command === 'unadd') {
                 try {
-                    client.friend.remove(content)
+                    await client.friend.add(content)
+                    message.reply(`${content} has been sent a friend request!`)
+                } catch (err) {
+                    if (err.message.includes("already a friend")) {
+                        message.reply(`${content} is already your friend!`)
+                    } else {
+                        message.reply(`An error occurred when trying to send a friend request to ${content}.`)
+                        console.log(err)
+                    }
+                }
+            }  else if (command === 'unadd') {
+                try {
+                    await client.friend.remove(content)
                     message.reply(`${content} has been unadded!`)
                 } catch (err) {
-                    message.reply(`Error: ${content} not found!`)
-                    console.error(err)
+                    if (err.message.includes("The friend") && err.message.includes("does not exist")) {
+                        message.reply(`Error: ${content} not found!`)
+                    } else {
+                        message.reply(`An error occured when trying to add ${content}!`)
+                        console.log(err)
+                    }
                 }
             } else if (command === 'restartclient') {
                 message.reply("Fortnite Client Is Restarting!")
