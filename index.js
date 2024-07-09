@@ -415,7 +415,7 @@ const GetVersion = require('./utils/version');
                         await fnbrclient.friend.add(user);
                         discordlog("[Command] add:", `**${user}** has been sent a friend request`, 0x00FF00, interaction);
                     } catch (err) {
-                        if (err.message.includes("already a friend")) {
+                        if (err.message.includes("already friends")) {
                             discordlog("[Command] add error:", `**${user}** is already your friend!`, 0x880800, interaction);
                         } else {
                             discordlog("[Command] add error:", `An error occurred while trying to send a friend request to **${user}**.`, 0x880800, interaction);
@@ -441,7 +441,7 @@ const GetVersion = require('./utils/version');
                 let friendNames = [];
                 friendList.forEach((friend) => {
                     if (friend && friend.displayName) {
-                        friendNames.push(friend.displayName);
+                        friendNames.push(`Name: ${friend.displayName} | ID ${friend.id}`);
                     }
                 });
                 let friendNamesString = friendNames.join(',').replace(/,/g, '\n');
@@ -914,7 +914,7 @@ const GetVersion = require('./utils/version');
                     await client.friend.add(content)
                     message.reply(`${content} has been sent a friend request!`)
                 } catch (err) {
-                    if (err.message.includes("already a friend")) {
+                    if (err.message.includes("already friends")) {
                         message.reply(`${content} is already your friend!`)
                     } else {
                         message.reply(`An error occurred when trying to send a friend request to ${content}.`)
@@ -941,7 +941,7 @@ const GetVersion = require('./utils/version');
                 let friendNames = '';
 
                 friendList.forEach((friend) => {
-                    friendNames += `${friend.displayName}\n`;
+                    friendNames += `Name: ${friend.displayName} | ID ${friend.id}\n`;
                 });
 
                 message.reply(`Friend list:\n${friendNames}`)
