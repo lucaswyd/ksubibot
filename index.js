@@ -209,6 +209,11 @@ dclient.once('ready', () => {
     });
 
     commands?.create({
+        name: "loginfnclient",
+        description: "login",
+    });
+
+    commands?.create({
         name: "logoutfnclient",
         description: "logout",
     });
@@ -500,14 +505,34 @@ const GetVersion = require('./utils/version');
                 else discordlog("[Command] Error:", `Skin **${skinname}** not found!`, 0x880800, interaction);
 
             } else if (commandName === 'restartfnclient') {
-                fnbrclient.restart();
+                try {
+                    res = await fnbrclient.restart();
+                    discordlog("[Command] restartfnclient:", `Client is restarting`, 0xFFA500, interaction);
 
-                discordlog("[Command] restartfnclient:", `Client is restarting`, 0xFFA500, interaction)
+                } catch (e) {
+                    console.log(e);
+                    discordlog("[Command] Error:", `fnbrclient restart encountered an error ,try /loginfnclient `, 0x880800, interaction)
+                }
 
             } else if (commandName === 'logoutfnclient') {
-                fnbrclient.logout();
+                try {
+                    res = await fnbrclient.logout();
+                    discordlog("[Command] logoutfnclient:", `Client is logging out`, 0xFFA500, interaction);
 
-                discordlog("[Command] logoutfnclient:", `Client is logging out`, 0xFFA500, interaction)
+                } catch (e) {
+                    console.log(e);
+                    discordlog("[Command] Error:", `fnbrclient logout encountered an error`, 0x880800, interaction);
+                }
+
+            } else if (commandName === 'loginfnclient') {
+                try {
+                    res = await fnbrclient.login();
+                    discordlog("[Command] loginfnclient:", `Client is logging in`, 0xFFA500, interaction);
+
+                } catch (e) {
+                    console.log(e);
+                    discordlog("[Command] Error:", `fnbrclient login encountered an error`, 0x880800, interaction);
+                }
 
             } else if (commandName === 'exit') {
 
