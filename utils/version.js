@@ -1,6 +1,6 @@
-const axios = require('axios').default;
-const Tokens = require("./Tokens.js");
-const Endpoints = require("./Endpoints.js");
+import axios from 'axios';
+import Tokens from "./Tokens.js";
+import Endpoints from "./Endpoints.js";
 
 /**
  * @typedef {import('./types').lightSwitchInfo} lightSwitchInfo
@@ -9,7 +9,7 @@ const Endpoints = require("./Endpoints.js");
  */
 
 
-module.exports = async function () {
+export default async function GetVersion () {
 
     /** @type {authToken} */
     const Auth = (

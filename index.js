@@ -1,10 +1,28 @@
-const nconf = require("nconf");
-const crypto = require("crypto");
-const fetch = require("node-fetch");
-const fs = require("fs");
-const axios = require("axios").default;
+import nconf from "nconf";
+import crypto from "crypto";
+import fetch from "node-fetch";
+import fs from "fs";
+import path from "path";
+import axios from "axios";
+import express from "express";
+import {
+  Client as Dclient,
+  GatewayIntentBits,
+  Partials,
+  EmbedBuilder,
+  ApplicationCommandOptionType,
+} from "discord.js";
+import pkg from 'fnbr';
+const { Client: FnbrClient, ClientOptions, Enums, Party } = pkg;
+import os from "os";
+import stringSimilarity from "string-similarity";
+import HttpsProxyAgent from "https-proxy-agent";
+import { allowedPlaylists, websocketHeaders } from "./utils/constants.js";
+import xmlparser from "xml-parser";
+import all from "colors";
+import GetVersion from "./utils/version.js";
+
 const config = nconf.argv().env().file({ file: "config.json" });
-const { Client: FNclient, ClientOptions, Enums, Party } = require("fnbr");
 const clientOptions = {
   defaultStatus: "Launching",
   auth: {},
@@ -16,7 +34,7 @@ const clientOptions = {
     maxSize: 4,
   },
 };
-const client = new FNclient(clientOptions);
+const client = new FnbrClient(clientOptions);
 const cid = nconf.get("fortnite:cid");
 const bid = nconf.get("fortnite:bid");
 const eid = nconf.get("fortnite:eid");
@@ -28,7 +46,6 @@ const discord_status = nconf.get("discord:status");
 const discord_status_type = nconf.get("discord:status_type");
 const discord_commands_guild = nconf.get("discord:command_guild");
 const web_message = nconf.get("system:web_message");
-const stringSimilarity = require("string-similarity");
 const DISCORD_TOKEN = process.env["DISCORD_TOKEN"];
 const DISCORD_BOT_OWNER = process.env["DISCORD_BOT_OWNER"];
 const discord_command_status_message = nconf.get(
@@ -47,16 +64,9 @@ const dologs = nconf.get("logs:enable_logs");
 const logchannel = nconf.get("logs:channel");
 const BotOwnerId = nconf.get("discord:bot_owner_epicid");
 const displayName = nconf.get("logs:name");
-const express = require("express");
-const path = require("path");
+
 const app = express();
-const {
-  Client: Dclient,
-  GatewayIntentBits,
-  Partials,
-  EmbedBuilder,
-  ApplicationCommandOptionType,
-} = require("discord.js");
+
 const dclient = new Dclient({
   intents: [
     GatewayIntentBits.Guilds,
@@ -329,16 +339,9 @@ app.listen(3000, () => {
   console.log(bot_loading_message);
 });
 
-const url = require("url");
-var os = require("os");
-const Websocket = require("ws");
-var HttpsProxyAgent = require("https-proxy-agent");
-const { allowedPlaylists, websocketHeaders } = require("./utils/constants");
-const xmlparser = require("xml-parser");
-require("colors");
+
 
 const bLog = true;
-const GetVersion = require("./utils/version");
 
 /**
  * @typedef {import('./utils/types').MMSTicket} MMSTicket
@@ -374,7 +377,7 @@ const GetVersion = require("./utils/version");
       Client.consoleQuestion("Please enter an authorization code: ");
   }
 
-  const client = new FNclient(clientOptions);
+  const client = new FnbrClient(clientOptions);
   await client.login();
   console.log(`[LOGS] Logged in as ${client.user.self.displayName}`);
   const fnbrclient = client;

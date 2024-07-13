@@ -1,4 +1,4 @@
-module.exports.allowedPlaylists = Object.freeze([
+export const allowedPlaylists = Object.freeze([
     "playlist_defaultduo",
     "playlist_trios",
     "playlist_defaultsquad",
@@ -8,7 +8,7 @@ module.exports.allowedPlaylists = Object.freeze([
     "playlist_blastberrysquad",
 ]);
 
-module.exports.websocketHeaders = Object.freeze({
+export const websocketHeaders = Object.freeze({
     "Accept-Version": "*",
     Pragma: "no-cache",
     "Cache-Control": "no-cache",

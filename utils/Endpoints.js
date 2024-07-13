@@ -1,4 +1,4 @@
-module.exports = Object.freeze({
+export default Object.freeze({
   // AUTH
   LOGIN_REPUTATION: 'https://www.epicgames.com/id/api/reputation',
   LOGIN_CSRF: 'https://www.epicgames.com/id/api/csrf',
