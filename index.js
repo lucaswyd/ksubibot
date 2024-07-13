@@ -638,8 +638,7 @@ const bLog = true;
           discordlog(
             "[Command] Error:",
             `fnbrclient restart encountered an error ,try /loginfnclient `,
-            0x880800,
-            interaction
+            0x880800
           );
         }
       } else if (commandName === "logoutfnclient") {
@@ -661,8 +660,7 @@ const bLog = true;
           discordlog(
             "[Command] Error:",
             `fnbrclient logout encountered an error`,
-            0x880800,
-            interaction
+            0x880800
           );
         }
       } else if (commandName === "loginfnclient") {
@@ -680,8 +678,7 @@ const bLog = true;
           discordlog(
             "[Command] Error:",
             `fnbrclient login encountered an error`,
-            0x880800,
-            interaction
+            0x880800
           );
         }
       } else if (commandName === "exit") {
