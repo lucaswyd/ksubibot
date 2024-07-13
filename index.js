@@ -630,8 +630,7 @@ const GetVersion = require("./utils/version");
           discordlog(
             "[Command] restartfnclient:",
             `Client restarted successfully`,
-            0x00ff00,
-            interaction
+            0x00ff00
           );
         } catch (e) {
           console.log(e);
@@ -654,8 +653,7 @@ const GetVersion = require("./utils/version");
           discordlog(
             "[Command] logoutfnclient:",
             `Client logged out`,
-            0x00ff00,
-            interaction
+            0x00ff00
           );
         } catch (e) {
           console.log(e);
@@ -678,8 +676,7 @@ const GetVersion = require("./utils/version");
           discordlog(
             "[Command] loginfnclient:",
             `Client logged in`,
-            0x00ff00,
-            interaction
+            0x00ff00
           );
         } catch (e) {
           console.log(e);
