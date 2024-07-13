@@ -702,7 +702,6 @@ const GetVersion = require('./utils/version');
                 });
 
                 const token = client.auth.sessions.get("fortnite").accessToken;
-                console.log(token)
 
                 const TicketRequest = (
                     await axios.get(
@@ -950,7 +949,7 @@ const GetVersion = require('./utils/version');
                 console.log("[PARTY] RIP bot\nBot was killed!")
                 process.exit(1)
             } else if (command === "stoptimer") {
-                if (timerstatus == true) {
+                if (timerstatus === true) {
                     timerstatus = false
                     let id = this.ID
                     console.log(`[PARTY] timer id: ${id}`)
@@ -1034,6 +1033,9 @@ const GetVersion = require('./utils/version');
     async function sleep(seconds) {
         return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
     }
+
+    let timerstatus = false;
+
     client.on('party:member:joined', async (join) => {
         client.party.me.sendPatch({ 'Default:AthenaCosmeticLoadout_j': '{"AthenaCosmeticLoadout":{"cosmeticStats":[{"statName":"TotalVictoryCrowns","statValue":0},{"statName":"TotalRoyalRoyales","statValue":999},{"statName":"HasCrown","statValue":0}]}}', })
         await client.party.me.setOutfit(cid);
@@ -1046,7 +1048,7 @@ const GetVersion = require('./utils/version');
             discordlog("[Logs] Party:", `Joined **${partyLeaderDisplayName}**'s party`, 0x00FFFF)
         } else return;
 
-        let party = client.party
+        const party = client.party
         await client.party.me.setBackpack(bid)
         await sleep(1.5)
         const minute = 600000
@@ -1100,7 +1102,7 @@ const GetVersion = require('./utils/version');
             if (client.party?.me?.isReady) {
                 client.party.me.setReadiness(false);
             };
-            if (timerstatus == true) {
+            if (timerstatus === true) {
                 timerstatus = false
                 let id = this.ID
                 clearTimeout(id)
@@ -1111,6 +1113,7 @@ const GetVersion = require('./utils/version');
 
     client.on('party:member:left', async (left) => {
         console.log(`member left: ${left.displayName}`)
+        const party = client.party
         if (dologs === true) {
 
             discordlog("[Logs] Party Members:", `**${left.displayName}** has left.`, 0xFFA500)
@@ -1134,7 +1137,7 @@ const GetVersion = require('./utils/version');
             if (client.party?.me?.isReady) {
                 client.party.me.setReadiness(false);
             };
-            if (timerstatus == true) {
+            if (timerstatus === true) {
                 timerstatus = false
                 let id = this.ID
                 clearTimeout(id)
