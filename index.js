@@ -627,7 +627,7 @@ const bLog = true;
           interaction
         );
         try {
-          res = await fnbrclient.restart();
+          const res = await fnbrclient.restart();
           discordlog(
             "[Command] restartfnclient:",
             `Client restarted successfully`,
@@ -649,7 +649,7 @@ const bLog = true;
           interaction
         );
         try {
-          res = await fnbrclient.logout();
+          const res = await fnbrclient.logout();
           discordlog(
             "[Command] logoutfnclient:",
             `Client logged out`,
@@ -671,7 +671,7 @@ const bLog = true;
           interaction
         );
         try {
-          res = await fnbrclient.login();
+          const res = await fnbrclient.login();
           discordlog("[Command] loginfnclient:", `Client logged in`, 0x00ff00);
         } catch (e) {
           console.log(e);
