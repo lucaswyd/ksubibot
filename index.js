@@ -209,8 +209,13 @@ dclient.once('ready', () => {
     });
 
     commands?.create({
-        name: 'restartall',
-        description: 'restarts all clients',
+        name: "logoutfnclient",
+        description: "logout",
+    });
+
+    commands?.create({
+        name: 'exit',
+        description: 'Kills the process',
     });
 
     commands?.create({
@@ -495,13 +500,18 @@ const GetVersion = require('./utils/version');
                 else discordlog("[Command] Error:", `Skin **${skinname}** not found!`, 0x880800, interaction);
 
             } else if (commandName === 'restartfnclient') {
-                fnbrclient.restart()
+                fnbrclient.restart();
 
                 discordlog("[Command] restartfnclient:", `Client is restarting`, 0xFFA500, interaction)
 
-            } else if (commandName === 'restartall') {
+            } else if (commandName === 'logoutfnclient') {
+                fnbrclient.logout();
 
-                discordlog("[Command] restartall:", `All clients are currently being killed!`, 0xFFA500, interaction)
+                discordlog("[Command] logoutfnclient:", `Client is logging out`, 0xFFA500, interaction)
+
+            } else if (commandName === 'exit') {
+
+                discordlog("[Command] exit:", `All clients are currently being killed!`, 0xFFA500, interaction)
 
                 function killbot() {
                     process.exit(1)
