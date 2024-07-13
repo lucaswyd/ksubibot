@@ -619,12 +619,18 @@ const GetVersion = require("./utils/version");
             interaction
           );
       } else if (commandName === "restartfnclient") {
+        discordlog(
+          "[Command] restartfnclient:",
+          `Client is restarting`,
+          0xffa500,
+          interaction
+        );
         try {
           res = await fnbrclient.restart();
           discordlog(
             "[Command] restartfnclient:",
-            `Client is restarting`,
-            0xffa500,
+            `Client restarted successfully`,
+            0x00ff00,
             interaction
           );
         } catch (e) {
@@ -637,12 +643,18 @@ const GetVersion = require("./utils/version");
           );
         }
       } else if (commandName === "logoutfnclient") {
+        discordlog(
+          "[Command] logoutfnclient:",
+          `Client is logging out`,
+          0xffa500,
+          interaction
+        );
         try {
           res = await fnbrclient.logout();
           discordlog(
             "[Command] logoutfnclient:",
-            `Client is logging out`,
-            0xffa500,
+            `Client logged out`,
+            0x00ff00,
             interaction
           );
         } catch (e) {
@@ -655,12 +667,18 @@ const GetVersion = require("./utils/version");
           );
         }
       } else if (commandName === "loginfnclient") {
+        discordlog(
+          "[Command] loginfnclient:",
+          `Client is logging in`,
+          0xffa500,
+          interaction
+        );
         try {
           res = await fnbrclient.login();
           discordlog(
             "[Command] loginfnclient:",
-            `Client is logging in`,
-            0xffa500,
+            `Client logged in`,
+            0x00ff00,
             interaction
           );
         } catch (e) {
