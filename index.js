@@ -12,7 +12,7 @@ import {
   EmbedBuilder,
   ApplicationCommandOptionType,
 } from "discord.js";
-import pkg from 'fnbr';
+import pkg from "fnbr";
 const { Client: FnbrClient, ClientOptions, Enums, Party } = pkg;
 import os from "os";
 import stringSimilarity from "string-similarity";
@@ -338,8 +338,6 @@ app.get("/", (req, res) => {
 app.listen(3000, () => {
   console.log(bot_loading_message);
 });
-
-
 
 const bLog = true;
 
@@ -676,11 +674,7 @@ const bLog = true;
         );
         try {
           res = await fnbrclient.login();
-          discordlog(
-            "[Command] loginfnclient:",
-            `Client logged in`,
-            0x00ff00
-          );
+          discordlog("[Command] loginfnclient:", `Client logged in`, 0x00ff00);
         } catch (e) {
           console.log(e);
           discordlog(
