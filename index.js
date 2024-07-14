@@ -118,16 +118,26 @@ fs.readFile("cosmetics.json", "utf8", (err, data) => {
 });
 
 function discordlog(title, content, color, interaction, followup = false) {
-  const logs = new EmbedBuilder()
-    .setColor(color)
-    .setTitle(title)
-    .setDescription(content);
   const channel = dclient.channels.cache.get(logchannel);
-  if (interaction && followup === false) {
-    interaction.reply({ embeds: [logs] });
-  } else if (interaction && followup === true) {
-    interaction.followUp({ embeds: [logs] });
-  } else channel.send({ embeds: [logs] });
+  try {
+    const logs = new EmbedBuilder()
+      .setColor(color)
+      .setTitle(title)
+      .setDescription(content);
+    if (interaction && followup === false) {
+      interaction.reply({ embeds: [logs] });
+    } else if (interaction && followup === true) {
+      interaction.followUp({ embeds: [logs] });
+    } else channel.send({ embeds: [logs] });
+  } catch (e) {
+    if (interaction) {
+      const channelid = interaction.channelId;
+      const fallBack = dclient.channels.cache.get(channelid);
+      fallBack.send({ embeds: [logs] });
+    } else {
+      channel.send({ embeds: [logs] });
+    }
+  }
 }
 
 dclient.once("ready", () => {
