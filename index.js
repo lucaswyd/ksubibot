@@ -117,14 +117,17 @@ fs.readFile("cosmetics.json", "utf8", (err, data) => {
   }
 });
 
-function discordlog(title, content, color, interaction) {
+function discordlog(title, content, color, interaction, followup = false) {
   const logs = new EmbedBuilder()
     .setColor(color)
     .setTitle(title)
     .setDescription(content);
   const channel = dclient.channels.cache.get(logchannel);
-  if (interaction) interaction.reply({ embeds: [logs] });
-  else channel.send({ embeds: [logs] });
+  if (interaction && followup === false) {
+    interaction.reply({ embeds: [logs] });
+  } else if (interaction && followup === true) {
+    interaction.followUp({ embeds: [logs] });
+  } else channel.send({ embeds: [logs] });
 }
 
 dclient.once("ready", () => {
@@ -628,18 +631,22 @@ const bLog = true;
           interaction
         );
         try {
-          const res = await fnbrclient.restart();
+          await fnbrclient.restart();
           discordlog(
             "[Command] restartfnclient:",
             `Client restarted successfully`,
-            0x00ff00
+            0x00ff00,
+            interaction,
+            true
           );
         } catch (e) {
           console.log(e);
           discordlog(
             "[Command] Error:",
             `fnbrclient restart encountered an error ,try /loginfnclient `,
-            0x880800
+            0x880800,
+            interaction,
+            true
           );
         }
       } else if (commandName === "logoutfnclient") {
@@ -650,18 +657,22 @@ const bLog = true;
           interaction
         );
         try {
-          const res = await fnbrclient.logout();
+          await fnbrclient.logout();
           discordlog(
             "[Command] logoutfnclient:",
             `Client logged out`,
-            0x00ff00
+            0x00ff00,
+            interaction,
+            true
           );
         } catch (e) {
           console.log(e);
           discordlog(
             "[Command] Error:",
             `fnbrclient logout encountered an error`,
-            0x880800
+            0x880800,
+            interaction,
+            true
           );
         }
       } else if (commandName === "loginfnclient") {
@@ -672,14 +683,22 @@ const bLog = true;
           interaction
         );
         try {
-          const res = await fnbrclient.login();
-          discordlog("[Command] loginfnclient:", `Client logged in`, 0x00ff00);
+          await fnbrclient.login();
+          discordlog(
+            "[Command] loginfnclient:",
+            `Client logged in`,
+            0x00ff00,
+            interaction,
+            true
+          );
         } catch (e) {
           console.log(e);
           discordlog(
             "[Command] Error:",
             `fnbrclient login encountered an error`,
-            0x880800
+            0x880800,
+            interaction,
+            true
           );
         }
       } else if (commandName === "exit") {
