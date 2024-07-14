@@ -1297,7 +1297,7 @@ const bLog = true;
   });
 
   client.on("party:invite", async (request) => {
-    party = client.party;
+    const party = client.party;
     if ([1] == party.size) {
       await request.accept();
     } else {
