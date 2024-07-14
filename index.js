@@ -18,6 +18,7 @@ import os from "os";
 import stringSimilarity from "string-similarity";
 import HttpsProxyAgent from "https-proxy-agent";
 import { allowedPlaylists, websocketHeaders } from "./utils/constants.js";
+import WebSocket from "ws";
 import xmlparser from "xml-parser";
 import all from "colors";
 import GetVersion from "./utils/version.js";
@@ -996,7 +997,7 @@ const bLog = true;
           hash,
         ];
 
-        const matchmakingClient = new Websocket(ticket.serviceUrl, {
+        const matchmakingClient = new WebSocket(ticket.serviceUrl, {
           perMessageDeflate: false,
           rejectUnauthorized: false,
           headers: {
