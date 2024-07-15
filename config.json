@@ -1,0 +1,39 @@
+{
+  "fortnite": {
+    "cid": "CID_416_Athena_Commando_M_AssassinSuit",
+    "bid": "BID_244_DarkVikingFire",
+    "eid": "",
+    "level": "69",
+    "battle_pass_owned": true,
+    "battle_pass_lvl": "1",
+    "banner": "",
+    "add_users": true,
+    "leave_time": 90000,
+    "join_message": "Welcome to Ryuk's Bot Lobby 🔥",
+    "invite_status": "Ryuk's Bot | Invite ✔️",
+    "invite_onlinetype": "online",
+    "inuse_status": "🚫Bot is In-Use!🚫",
+    "inuse_onlinetype": "online"
+  },
+
+  "logs": {
+    "enable_logs": true,
+    "channel": "869978103471046708",
+    "name": "**Ryuk**'s Bot"
+  },
+
+  "discord": {
+    "run_discord_client": true,
+    "bot_owner_epicid": "29ab92b3334242c7823e3d827208dc4d",
+    "guild_slash_status_response": "Ryuk's FN Bot is currently online!",
+    "command_guild": "918316804105969694",
+    "status": "Fortnite",
+    "status_type": "PLAYING"
+  },
+
+  "system": {
+    "bot_loading_message": "Bot is loading!",
+    "web_message": "use this for uptime",
+    "version": "8.2.0"
+  }
+}

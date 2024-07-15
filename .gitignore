@@ -133,3 +133,4 @@ dist
 # custom build dir
 build/
 ./cosmetics.json
+./config.json
