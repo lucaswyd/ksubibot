@@ -1,7 +1,7 @@
 import axios from "axios";
 import basicToken from "./Tokens.js";
 import Endpoints from "./Endpoints.js";
-import type { lightSwitchInfo, fortniteBuild, authToken } from "./types";
+import type { lightSwitchInfo, fortniteBuild, authToken } from "./types.js";
 
 export default async function GetVersion(): Promise<string> {
   const Auth = (

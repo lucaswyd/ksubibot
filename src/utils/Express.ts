@@ -1,5 +1,5 @@
 import express, { Request, Response, Express } from "express";
-import { web_message, bot_loading_message } from "./Config";
+import { web_message, bot_loading_message } from "./Config.js";
 
 export const ExpressApp: Express = express();
 

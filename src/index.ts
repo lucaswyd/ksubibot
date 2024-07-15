@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Express } from "express";
-import { ExpressApp } from "./utils/Express";
+import { ExpressApp } from "./utils/Express.js";
 import fnbr from "fnbr";
 import {
   ClientParty,
@@ -13,20 +13,20 @@ import {
 } from "fnbr";
 import { ClientRequest, IncomingMessage } from "http";
 import os from "os";
-import { allowedPlaylists, websocketHeaders } from "./utils/constants";
+import { allowedPlaylists, websocketHeaders } from "./utils/constants.js";
 import WebSocket from "ws";
 import xmlparser from "xml-parser";
-import GetVersion from "./utils/version";
+import GetVersion from "./utils/version.js";
 import {
   discordlog,
   calcChecksum,
   UpdateCosmetics,
   findCosmetic,
   sleep,
-} from "./utils/Helpers";
-import * as Config from "./utils/Config";
-import { dclient, setUpDClient } from "./utils/discordClient";
-import setupInteractionHandler from "./utils/interactionHandler";
+} from "./utils/Helpers.js";
+import * as Config from "./utils/Config.js";
+import { dclient, setUpDClient } from "./utils/discordClient.js";
+import setupInteractionHandler from "./utils/interactionHandler.js";
 
 UpdateCosmetics();
 const app: Express = ExpressApp;
@@ -35,8 +35,8 @@ let timerstatus: boolean = false;
 let timerId: NodeJS.Timeout | undefined = undefined;
 setUpDClient();
 
-type MMSTicket = import("./utils/types").MMSTicket;
-type PartyMatchmakingInfo = import("./utils/types").PartyMatchmakingInfo;
+type MMSTicket = import("./utils/types.js").MMSTicket;
+type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
 
 (async () => {
   const latest = await GetVersion();

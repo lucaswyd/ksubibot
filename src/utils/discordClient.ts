@@ -10,8 +10,8 @@ import {
   dologs,
   discord_status,
   displayName,
-} from "./Config";
-import { discordlog } from "./Helpers";
+} from "./Config.js";
+import { discordlog } from "./Helpers.js";
 
 console.log("[LOGS] Initializing Discord Client...");
 

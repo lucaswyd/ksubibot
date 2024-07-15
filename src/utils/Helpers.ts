@@ -1,6 +1,6 @@
 import { EmbedBuilder, ColorResolvable, CommandInteraction } from "discord.js";
-import { logchannel } from "./Config";
-import { dclient } from "./discordClient";
+import { logchannel } from "./Config.js";
+import { dclient } from "./discordClient.js";
 import stringSimilarity from "string-similarity";
 import axios from "axios";
 import path from "path";
