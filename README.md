@@ -2,7 +2,7 @@
 
 ### Configuration
 
-Before running the application, Please refer to the [Configuration Guide](MD/CONFIG.md).
+Before running the application, Please refer to the [Configuration Guide](md/CONFIG.md).
 
 ### Installation
 
