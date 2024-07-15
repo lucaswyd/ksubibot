@@ -134,3 +134,4 @@ dist
 build/
 cosmetics.json
 config.json
+package-lock.json

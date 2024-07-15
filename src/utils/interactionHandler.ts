@@ -1,4 +1,4 @@
-import { Client as DiscordClient, CommandInteraction, Interaction, InteractionType } from 'discord.js';
+import { Client as DiscordClient, CommandInteraction, Interaction } from 'discord.js';
 import { Client as FnbrClient } from 'fnbr';
 import fetch from 'node-fetch';
 import fs from 'fs';
