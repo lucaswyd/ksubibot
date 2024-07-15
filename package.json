@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node --es-module-specifier-resolution=node .",
-    "build": "tsc",
-    "postbuild": "copyfiles config.json build/"
+    "build": "tsc"
   },
   "dependencies": {
     "@discordjs/builders": "^1.8.2",
@@ -38,7 +37,6 @@
     "@types/string-similarity": "^4.0.2",
     "@types/ws": "^8.5.11",
     "@types/xml-parser": "^1.2.33",
-    "copyfiles": "^2.4.1",
     "tsc-alias": "^1.8.10",
     "typescript": "^5.5.3"
   }
