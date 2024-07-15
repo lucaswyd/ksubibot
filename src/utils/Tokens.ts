@@ -3,9 +3,15 @@
  * * `LAUNCHER_WINDOWS`
  * * `FORTNITE_WINDOWS`
  * * `FORTNITE_IOS`
- * @typedef {Object} BasicToken
  */
-export default Object.freeze({
+interface BasicToken {
+  LAUNCHER_WINDOWS: string;
+  FORTNITE_WINDOWS: string;
+  FORTNITE_IOS: string;
+  FORTNITE_SWITCH: string;
+}
+
+const basicToken: BasicToken = Object.freeze({
   LAUNCHER_WINDOWS:
     "MzRhMDJjZjhmNDQxNGUyOWIxNTkyMTg3NmRhMzZmOWE6ZGFhZmJjY2M3Mzc3NDUwMzlkZmZlNTNkOTRmYzc2Y2Y=",
   FORTNITE_WINDOWS:
@@ -15,3 +21,5 @@ export default Object.freeze({
   FORTNITE_SWITCH:
     "NTIyOWRjZDNhYzM4NDUyMDhiNDk2NjQ5MDkyZjI1MWI6ZTNiZDJkM2UtYmY4Yy00ODU3LTllN2QtZjNkOTQ3ZDIyMGM3=",
 });
+
+export default basicToken;

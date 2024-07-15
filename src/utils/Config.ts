@@ -1,4 +1,5 @@
 import nconf from "nconf";
+import { PartyPrivacy } from "fnbr";
 nconf.argv().env().file({ file: "config.json" });
 
 export const cid = nconf.get("fortnite:cid");
@@ -27,9 +28,11 @@ export const BotOwnerId = nconf.get("discord:bot_owner_epicid");
 export const displayName = nconf.get("logs:name");
 export const logchannel = nconf.get("logs:channel");
 
-export const clientOptions = {
+export const clientOptions: Record<any, any> = {
   defaultStatus: "Launching",
-  auth: {},
+  auth: {
+    deviceAuth: {},
+  },
   debug: console.log,
   xmppDebug: false,
   platform: "WIN",
@@ -39,8 +42,17 @@ export const clientOptions = {
   },
 };
 
-export const deviceauths = {
+export const deviceauths: Record<string, string | undefined> = {
   accountId: process.env["accountId"],
   deviceId: process.env["deviceId"],
   secret: process.env["secret"],
+};
+
+export const PrivateParty: PartyPrivacy = {
+  partyType: "Private",
+  inviteRestriction: "AnyMember",
+  onlyLeaderFriendsCanJoin: true,
+  presencePermission: "Anyone",
+  invitePermission: "Anyone",
+  acceptingMembers: true,
 };

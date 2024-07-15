@@ -1,20 +1,21 @@
 import {
-  Client as Dclient,
+  Client as DClient,
   GatewayIntentBits,
   Partials,
   ApplicationCommandOptionType,
+  ActivityType,
 } from "discord.js";
 import {
   discord_status_type,
   dologs,
   discord_status,
   displayName,
-} from "./Config.js";
-import { discordlog } from "./Helpers.js";
+} from "./Config";
+import { discordlog } from "./Helpers";
 
 console.log("[LOGS] Initializing Discord Client...");
 
-export const dclient = new Dclient({
+export const dclient = new DClient({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -32,8 +33,8 @@ export function setUpDClient() {
       console.log("[LOGS] disabled.");
     }
 
-    dclient.user.setActivity(discord_status, {
-      type: discord_status_type,
+    dclient.user?.setActivity(discord_status, {
+      type: discord_status_type as ActivityType,
     });
 
     const commands = dclient.application?.commands;
