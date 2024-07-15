@@ -56,3 +56,9 @@ export const PrivateParty: PartyPrivacy = {
   invitePermission: "Anyone",
   acceptingMembers: true,
 };
+
+export enum AuthSessionStoreKey {
+  Fortnite = "fortnite",
+  FortniteClientCredentials = "fortniteClientCredentials",
+  Launcher = "launcher",
+}

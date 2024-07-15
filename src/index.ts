@@ -48,16 +48,8 @@ type PartyMatchmakingInfo = import("./utils/types").PartyMatchmakingInfo;
 
   axios.defaults.headers["user-agent"] = UserAgent;
   console.log("UserAgent set to", axios.defaults.headers["user-agent"]);
-
-  try {
-    Config.clientOptions.auth.deviceAuth = Config.deviceauths;
-  } catch (e) {
-    // @ts-ignore
-    Config.clientOptions.auth.authorizationCode = async (C: any) =>
-      C.consoleQuestion("Please enter an authorization code: ");
-  }
-
-  const client = new fnbr.Client(Config.clientOptions as any);
+  Config.clientOptions.auth.deviceAuth = Config.deviceauths;
+  const client = new fnbr.Client(Config.clientOptions);
   await client.login();
   console.log(`[LOGS] Logged in as ${client?.user?.self?.displayName}`);
   const fnbrclient = client;
@@ -188,8 +180,9 @@ type PartyMatchmakingInfo = import("./utils/types").PartyMatchmakingInfo;
             }
           });
 
-        // @ts-ignore - for now
-        const token = client.auth.sessions.get("fortnite").accessToken;
+        const token = client?.auth?.sessions?.get(
+          Config.AuthSessionStoreKey.Fortnite
+        )?.accessToken;
 
         const TicketRequest = await axios.get(
           `https://fortnite-public-service-prod11.ol.epicgames.com/fortnite/api/game/v2/matchmakingservice/ticket/player/${client?.user?.self?.id}?${query}`,
