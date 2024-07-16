@@ -1,5 +1,5 @@
 import type { ReceivedFriendMessage, Friend, Client } from "fnbr";
-import { findCosmetic, discordlog } from "./Helpers.js";
+import { findCosmetic, discordlog, stringToBool } from "./Helpers.js";
 import { config } from "./Config.js";
 
 export const handleCommand = async (
@@ -15,7 +15,6 @@ export const handleCommand = async (
   const args: string[] = message.content.slice(1).split(" ");
   const command: string | undefined = args?.shift()?.toLowerCase();
   const content: string = args.join(" ");
-
 
   if (sender.id === config.fortnite.owner_epicid) {
     switch (command) {
@@ -106,6 +105,7 @@ export const handleCommand = async (
       case "kill":
         message.reply("Bot is dead");
         console.log("[PARTY] RIP bot\nBot was killed!");
+        discordlog("Bot was killed!", "Bot was killed from Party!", 0xff0000);
         process.exit(1);
       case "stoptimer":
         if (timerstatus === true) {
@@ -115,6 +115,15 @@ export const handleCommand = async (
           clearTimeout(id);
           console.log("[PARTY] Time has stoped!");
           message.reply("Time has been stoped!");
+        }
+        break;
+      case "sitout":
+        if (stringToBool(content) === true) {
+          client?.party?.me.setSittingOut(true);
+          message.reply("I'm sitting out!");
+        } else if (stringToBool(content) === false) {
+          client?.party?.me.setSittingOut(false);
+          message.reply("I'm not sitting out!");
         }
         break;
       default:

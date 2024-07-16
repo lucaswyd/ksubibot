@@ -209,7 +209,7 @@ export default function setupInteractionHandler(
         break;
 
       case 'sitout':
-        const sitValue = options.get('sitingout')?.value as boolean;
+        const sitValue = options.get('sittingout')?.value as boolean;
         if (sitValue !== null) {
           fnbrclient?.party?.me.setSittingOut(sitValue);
           discordlog('[Command] sitout:', `Sitting out state set to **${sitValue}**`, 0x00ff00, commandInteraction);
