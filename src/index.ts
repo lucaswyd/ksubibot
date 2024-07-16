@@ -10,7 +10,6 @@ import fnbr, {
   ReceivedFriendMessage,
 } from "fnbr";
 import os from "os";
-import { allowedPlaylists } from "./utils/constants.js";
 import GetVersion from "./utils/version.js";
 import {
   discordlog,
@@ -28,8 +27,7 @@ import { dclient, setUpDClient } from "./utils/discordClient.js";
 import setupInteractionHandler from "./utils/interactionHandler.js";
 import { handleCommand } from "./utils/commandHandler.js";
 import { startMatchmaking } from "./utils/matchmaking.js";
-import type { PartyMatchmakingInfo, AxiosErrorResponseData } from "./utils/types.js";
-
+import type { AxiosErrorResponseData } from "./utils/types.js";
 
 UpdateCosmetics();
 const app: Express = ExpressApp;
@@ -103,8 +101,8 @@ setUpDClient();
 
   let bIsMatchmaking = false;
 
-  client.on("party:updated", async (updated: ClientParty) => {
-    switch (updated.meta.schema["Default:PartyState_s"]) {
+  client.on("party:updated", async (updatedParty: ClientParty) => {
+    switch (updatedParty.meta.schema["Default:PartyState_s"]) {
       case "BattleRoyalePreloading": {
         const loadout = client?.party?.me.meta.set("Default:LobbyState_j", {
           LobbyState: {
@@ -131,61 +129,14 @@ setUpDClient();
           } else return;
           return;
         }
+
         bIsMatchmaking = true;
         if (bLog) {
           console.log(`[${"Matchmaking"}]`, "Matchmaking Started");
         }
 
-        const PartyMatchmakingInfo: PartyMatchmakingInfo = JSON.parse(
-          updated.meta.schema["Default:PartyMatchmakingInfo_j"] ?? ""
-        ).PartyMatchmakingInfo;
-
-        const playlistId =
-          PartyMatchmakingInfo.playlistName.toLocaleLowerCase();
-
-        if (!allowedPlaylists.includes(playlistId)) {
-          console.log("Unsupported playlist", playlistId);
-          client?.party?.chat.send(
-            `Playlist id: ${playlistId} is not a supported gamemode!`
-          );
-          client?.party?.me.setReadiness(false);
-          return;
-        }
-        const partyPlayerIds = client?.party?.members
-          .filter((x: any) => x.isReady)
-          .map((x: any) => x.id)
-          .join(",");
-
-        const bucketId = `${PartyMatchmakingInfo.buildId}:${PartyMatchmakingInfo.playlistRevision}:${PartyMatchmakingInfo.regionId}:${playlistId}`;
-        console.log(bucketId);
-        if (config.logs.enable_logs === true) {
-          discordlog("[Logs] New BucketId:", `**${bucketId}**`, 0x00ffff);
-        } else return;
-
-        console.log(partyPlayerIds);
-
-        const query = new URLSearchParams();
-        query.append("partyPlayerIds", partyPlayerIds ? partyPlayerIds : "");
-        query.append("player.platform", "Windows");
-        query.append(
-          "player.option.partyId",
-          client.party?.id ? client.party?.id : ""
-        );
-        query.append("input.KBM", "true");
-        query.append("player.input", "KBM");
-        query.append("bucketId", bucketId);
-
-        client?.party?.members
-          .filter((x: PartyMember) => x.isReady)
-          .forEach((Member: PartyMember) => {
-            const platform = Member.meta.get("Default:PlatformData_j");
-            if (!query.has(`party.${platform?.PlatformName}`)) {
-              query.append(`party.${platform?.PlatformName}`, "true");
-            }
-          });
-
         // Initiate matchmaking websocket and its event listeners
-        startMatchmaking(client, query, bLog, bIsMatchmaking);
+        startMatchmaking(client, updatedParty, bLog, bIsMatchmaking);
         break;
       }
 
@@ -221,7 +172,7 @@ setUpDClient();
           console.log(
             `[${"Party"}]`,
             "Unknow PartyState",
-            updated.meta.schema["Default:PartyState_s"]
+            updatedParty.meta.schema["Default:PartyState_s"]
           );
         }
         break;

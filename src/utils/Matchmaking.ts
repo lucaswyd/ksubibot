@@ -6,8 +6,13 @@ import xmlparser from "xml-parser";
 import { config, AuthSessionStoreKey } from "./Config.js";
 import { websocketHeaders } from "./constants.js";
 import Endpoints from "./Endpoints.js";
-import type { Client } from "fnbr";
-import type { MMSTicket, TicketResponse } from "./types.js";
+import type { Client, PartyMember, ClientParty } from "fnbr";
+import { allowedPlaylists } from "./constants.js";
+import type {
+  MMSTicket,
+  TicketResponse,
+  PartyMatchmakingInfo,
+} from "./types.js";
 
 export async function getMMTicket(
   token: string | undefined,
@@ -37,11 +42,58 @@ export async function getMMTicket(
 
 export async function startMatchmaking(
   client: Client,
-  query: URLSearchParams,
+  updatedParty: ClientParty,
   bLog: Boolean,
   bIsMatchmaking: Boolean
 ) {
   try {
+    const PartyMatchmakingInfo: PartyMatchmakingInfo = JSON.parse(
+      updatedParty.meta.schema["Default:PartyMatchmakingInfo_j"] ?? ""
+    ).PartyMatchmakingInfo;
+
+    const playlistId = PartyMatchmakingInfo.playlistName.toLocaleLowerCase();
+
+    if (!allowedPlaylists.includes(playlistId)) {
+      console.log("Unsupported playlist", playlistId);
+      client?.party?.chat.send(
+        `Playlist id: ${playlistId} is not a supported gamemode!`
+      );
+      client?.party?.me.setReadiness(false);
+      return;
+    }
+    const partyPlayerIds = client?.party?.members
+      .filter((x: any) => x.isReady)
+      .map((x: any) => x.id)
+      .join(",");
+
+    const bucketId = `${PartyMatchmakingInfo.buildId}:${PartyMatchmakingInfo.playlistRevision}:${PartyMatchmakingInfo.regionId}:${playlistId}`;
+    console.log(bucketId);
+    if (config.logs.enable_logs === true) {
+      discordlog("[Logs] New BucketId:", `**${bucketId}**`, 0x00ffff);
+    } else return;
+
+    console.log(partyPlayerIds);
+
+    const query = new URLSearchParams();
+    query.append("partyPlayerIds", partyPlayerIds ? partyPlayerIds : "");
+    query.append("player.platform", "Windows");
+    query.append(
+      "player.option.partyId",
+      client.party?.id ? client.party?.id : ""
+    );
+    query.append("input.KBM", "true");
+    query.append("player.input", "KBM");
+    query.append("bucketId", bucketId);
+
+    client?.party?.members
+      .filter((x: PartyMember) => x.isReady)
+      .forEach((Member: PartyMember) => {
+        const platform = Member.meta.get("Default:PlatformData_j");
+        if (!query.has(`party.${platform?.PlatformName}`)) {
+          query.append(`party.${platform?.PlatformName}`, "true");
+        }
+      });
+
     const token = client?.auth?.sessions?.get(
       AuthSessionStoreKey.Fortnite
     )?.accessToken;
