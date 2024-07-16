@@ -1,7 +1,7 @@
 import nconf from "nconf";
-import { Config } from "./types.js";
 import { PartyPrivacy } from "fnbr";
 nconf.argv().env().file({ file: "config.json" });
+import type { Config } from "./types.js";
 
 export const config: Config = {
   fortnite: {

@@ -66,6 +66,10 @@ export default Object.freeze({
     "https://account-public-service-prod03.ol.epicgames.com/account/api/public/account/email",
   MCP: "https://fortnite-public-service-prod11.ol.epicgames.com/fortnite/api/game/v2/profile",
 
+  // MATCHMAKING
+  MATCHMAKING:
+    "https://fortnite-public-service-prod11.ol.epicgames.com/fortnite/api/game/v2/matchmakingservice/ticket/player/",
+
   // FRIENDS
   FRIENDS: "https://friends-public-service-prod.ol.epicgames.com/friends/api",
   FRIEND_ADD:

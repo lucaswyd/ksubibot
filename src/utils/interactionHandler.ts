@@ -1,16 +1,9 @@
 import { Client as DiscordClient, CommandInteraction, Interaction } from 'discord.js';
-import { Config } from './types.js'
 import { Client as FnbrClient } from 'fnbr';
+import type { Config, Cosmetic } from "./types.js";
 import fetch from 'node-fetch';
 import fs from 'fs';
 
-interface Cosmetic {
-  exists: boolean;
-  cosmeticmatch: {
-    id: string;
-    name: string;
-  };
-}
 
 export default function setupInteractionHandler(
   dclient: DiscordClient,

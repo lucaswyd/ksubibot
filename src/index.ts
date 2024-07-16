@@ -9,15 +9,12 @@ import fnbr, {
   IncomingPendingFriend,
   ReceivedFriendMessage,
 } from "fnbr";
-import { ClientRequest, IncomingMessage } from "http";
+
 import os from "os";
-import { allowedPlaylists, websocketHeaders } from "./utils/constants.js";
-import WebSocket from "ws";
-import xmlparser from "xml-parser";
+import { allowedPlaylists } from "./utils/constants.js";
 import GetVersion from "./utils/version.js";
 import {
   discordlog,
-  calcChecksum,
   UpdateCosmetics,
   findCosmetic,
   sleep,
@@ -27,11 +24,12 @@ import {
   clientOptions,
   deviceauths,
   PrivateParty,
-  AuthSessionStoreKey,
 } from "./utils/Config.js";
 import { dclient, setUpDClient } from "./utils/discordClient.js";
 import setupInteractionHandler from "./utils/interactionHandler.js";
 import { handleCommand } from "./utils/commandHandler.js";
+import { startMatchmaking } from "./utils/matchmaking.js";
+import type { PartyMatchmakingInfo } from "./utils/types.js";
 
 UpdateCosmetics();
 const app: Express = ExpressApp;
@@ -39,10 +37,6 @@ const bLog: boolean = true;
 let timerstatus: boolean = false;
 let timerId: NodeJS.Timeout | undefined = undefined;
 setUpDClient();
-
-type MMSTicket = import("./utils/types.js").MMSTicket;
-type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
-type Config = import("./utils/types.js").Config;
 
 (async () => {
   const latest = await GetVersion();
@@ -189,155 +183,7 @@ type Config = import("./utils/types.js").Config;
             }
           });
 
-        const token = client?.auth?.sessions?.get(
-          AuthSessionStoreKey.Fortnite
-        )?.accessToken;
-
-        const TicketRequest = await axios.get(
-          `https://fortnite-public-service-prod11.ol.epicgames.com/fortnite/api/game/v2/matchmakingservice/ticket/player/${client?.user?.self?.id}?${query}`,
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (TicketRequest.status != 200) {
-          console.log(`[${"Matchmaking"}]`, "Error while obtaining ticket");
-          client?.party?.me.setReadiness(false);
-          return;
-        }
-
-        const ticket: MMSTicket = TicketRequest.data;
-        const payload = ticket.payload;
-        const signature = ticket.signature;
-
-        if (TicketRequest.status != 200) {
-          console.log(`[${"Matchmaking"}]`, "Error while obtaining Hash");
-          client?.party?.me.setReadiness(false);
-          return;
-        }
-
-        const hash = await calcChecksum(payload, signature);
-
-        console.log(ticket.payload, ticket.signature, hash);
-
-        const MMSAuth = [
-          "Epic-Signed",
-          ticket.ticketType,
-          payload,
-          signature,
-          hash,
-        ];
-
-        const matchmakingClient = new WebSocket(ticket.serviceUrl, {
-          perMessageDeflate: false,
-          rejectUnauthorized: false,
-          headers: {
-            Origin: ticket.serviceUrl.replace("ws", "http"),
-            Authorization: MMSAuth.join(" "),
-            ...websocketHeaders,
-          },
-        });
-
-        matchmakingClient.on(
-          "unexpected-response",
-          (request: ClientRequest, response: IncomingMessage) => {
-            let data = "";
-            response.on("data", (chunk) => (data += chunk));
-
-            response.on("end", () => {
-              const baseMessage = `[MATCHMAKING] Error Error while connecting to matchmaking service: (status ${response.statusCode} ${response.statusMessage})`;
-
-              client?.party?.chat.send(
-                `Error while connecting to matchmaking service: (status ${response.statusCode} ${response.statusMessage})`
-              );
-
-              const contentType = response.headers["content-type"] ?? "error";
-
-              if (data == "") {
-                console.error(baseMessage);
-                if (config.logs.enable_logs === true) {
-                  discordlog("[Logs] Error", baseMessage, 0x880808);
-                } else return;
-              } else if (contentType.startsWith("application/json")) {
-                const jsonData = JSON.parse(data);
-
-                if (jsonData.errorCode) {
-                  console.error(
-                    `${baseMessage}, ${jsonData.errorCode} ${
-                      jsonData.errorMessage || ""
-                    }`
-                  );
-                  client?.party?.chat.send(
-                    `Error while connecting to matchmaking service: ${
-                      jsonData.errorCode
-                    } ${jsonData.errorMessage || ""}`
-                  );
-                } else {
-                  console.error(`${baseMessage} response body: ${data}`);
-                }
-              } else if (response.headers["x-epic-error-name"]) {
-                console.error(
-                  `${baseMessage}, ${response.headers["x-epic-error-name"]} response body: ${data}`
-                );
-              } else if (contentType.startsWith("text/html")) {
-                const parsed = xmlparser(data);
-
-                if (parsed.root) {
-                  try {
-                    const head = parsed.root.children?.find(
-                      (x: any) => x.name === "head"
-                    );
-                    const titleElement = head?.children?.find(
-                      (x: any) => x.name === "title"
-                    );
-                    const title = titleElement
-                      ? titleElement.children[0].content
-                      : "No title found";
-
-                    console.error(`${baseMessage} HTML title: ${title}`);
-                  } catch (error) {
-                    console.error(`${baseMessage} HTML response body: ${data}`);
-                  }
-                } else {
-                  console.error(`${baseMessage} HTML response body: ${data}`);
-                }
-              } else {
-                console.error(`${baseMessage} response body: ${data}`);
-              }
-            });
-          }
-        );
-
-        if (bLog) {
-          matchmakingClient.on("close", function () {
-            console.log(
-              `[${"Matchmaking"}]`,
-              "Connection to the matchmaker closed"
-            );
-            if (config.logs.enable_logs === true) {
-              discordlog("[Logs] Matchmaking", "Matchmaking closed", 0xffa500);
-            } else return;
-          });
-        }
-
-        matchmakingClient.on("message", (msg: string) => {
-          const message = JSON.parse(msg);
-          if (bLog) {
-            console.log(
-              `[${"Matchmaking"}]`,
-              "Message from the matchmaker",
-              message
-            );
-          }
-
-          if (message.name === "Error") {
-            bIsMatchmaking = false;
-          }
-        });
-
+        const mm = startMatchmaking(client, query, bLog, bIsMatchmaking);
         break;
       }
 

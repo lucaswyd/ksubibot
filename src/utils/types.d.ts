@@ -333,3 +333,16 @@ export interface Config {
   system: SystemConfig;
   env: EnvConfig;
 }
+
+export interface TicketResponse {
+  TicketData: MMSTicket;
+  TicketStatus: number;
+}
+
+export interface Cosmetic {
+  exists: boolean;
+  cosmeticmatch: {
+    id: string;
+    name: string;
+  };
+}
