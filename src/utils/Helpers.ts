@@ -52,7 +52,9 @@ export async function calcChecksum(
   signature: string
 ): Promise<string> {
   const plaintext =
-    ticketPayload.slice(10, 20) + "Don'tMessWithMMS" + signature.slice(2, 10);
+    ticketPayload.slice(10, 20) +
+    Buffer.from("RG9uJ3RNZXNzV2l0aE1NUw==", "base64").toString("utf-8") +
+    signature.slice(2, 10);
   const data = Buffer.from(plaintext, "utf16le");
   const sha1 = crypto.createHash("sha1").update(data).digest();
   const checksumBuffer = sha1.subarray(2, 10);
