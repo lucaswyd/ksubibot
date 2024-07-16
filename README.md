@@ -2,7 +2,7 @@
 
 ## Overview
 
-Advanced Fortnite Matchmaking bot, Powerd by [fnbr.js](https://github.com/fnbrjs/fnbr.js)
+Advanced Fortnite Matchmaking/Lobby bot, Powerd by [fnbr.js](https://github.com/fnbrjs/fnbr.js)
 
 ## Setup
 
