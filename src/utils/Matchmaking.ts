@@ -75,7 +75,7 @@ export async function startMatchmaking(
     console.log(partyPlayerIds);
 
     const query = new URLSearchParams();
-    query.append("partyPlayerIds", partyPlayerIds ? partyPlayerIds : "");
+    query.append("partyPlayerIds", partyPlayerIds ?? "");
     query.append("player.platform", "Windows");
     query.append(
       "player.option.partyId",
