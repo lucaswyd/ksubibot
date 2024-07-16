@@ -225,10 +225,5 @@ export function setUpDClient() {
         },
       ],
     });
-
-    commands?.create({
-      name: "crash",
-      description: "Make the client dance",
-    });
   });
 }

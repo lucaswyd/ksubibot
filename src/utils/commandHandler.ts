@@ -1,4 +1,4 @@
-import { ReceivedFriendMessage, Friend, Client } from "fnbr";
+import type { ReceivedFriendMessage, Friend, Client } from "fnbr";
 import { findCosmetic, discordlog } from "./Helpers.js";
 import { config } from "./Config.js";
 

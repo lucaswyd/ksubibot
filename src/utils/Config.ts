@@ -1,6 +1,6 @@
 import nconf from "nconf";
-import { PartyPrivacy } from "fnbr";
 nconf.argv().env().file({ file: "config.json" });
+import type { PartyPrivacy } from "fnbr";
 import type { Config } from "./types.js";
 
 export const config: Config = {

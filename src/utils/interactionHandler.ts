@@ -228,13 +228,6 @@ export default function setupInteractionHandler(
         }
         break;
 
-      case 'crash':
-          fnbrclient?.party?.me.setEmote('/setemote emoteid:eid_floss');
-          fnbrclient?.party?.leave();
-          console.log('Left party');
-          discordlog('[Command] crash:', 'Party was crashed', 0x880800, commandInteraction);
-        break;
-
       case 'block':
         const blockuser = options.get('usertoblock')?.value as string;
         if (blockuser) {

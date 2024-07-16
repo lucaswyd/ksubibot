@@ -9,7 +9,6 @@ import fnbr, {
   IncomingPendingFriend,
   ReceivedFriendMessage,
 } from "fnbr";
-
 import os from "os";
 import { allowedPlaylists } from "./utils/constants.js";
 import GetVersion from "./utils/version.js";

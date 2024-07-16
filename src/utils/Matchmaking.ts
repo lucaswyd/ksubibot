@@ -3,10 +3,10 @@ import WebSocket from "ws";
 import { IncomingMessage, ClientRequest } from "http";
 import { calcChecksum, discordlog } from "./Helpers.js";
 import xmlparser from "xml-parser";
-import { Client } from "fnbr";
 import { config, AuthSessionStoreKey } from "./Config.js";
 import { websocketHeaders } from "./constants.js";
 import Endpoints from "./Endpoints.js";
+import type { Client } from "fnbr";
 import type { MMSTicket, TicketResponse } from "./types.js";
 
 export async function getMMTicket(
