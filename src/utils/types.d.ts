@@ -346,3 +346,8 @@ export interface Cosmetic {
     name: string;
   };
 }
+
+export interface AxiosErrorResponseData {
+  errorCode?: string;
+  errorMessage?: string;
+}

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Express } from "express";
 import { ExpressApp } from "./utils/Express.js";
 import fnbr, {
@@ -28,7 +28,8 @@ import { dclient, setUpDClient } from "./utils/discordClient.js";
 import setupInteractionHandler from "./utils/interactionHandler.js";
 import { handleCommand } from "./utils/commandHandler.js";
 import { startMatchmaking } from "./utils/matchmaking.js";
-import type { PartyMatchmakingInfo } from "./utils/types.js";
+import type { PartyMatchmakingInfo, AxiosErrorResponseData } from "./utils/types.js";
+
 
 UpdateCosmetics();
 const app: Express = ExpressApp;
@@ -78,11 +79,12 @@ setUpDClient();
     timerId
   );
 
-  axios.interceptors.response.use(undefined, function (error) {
+  axios.interceptors.response.use(undefined, function (error: AxiosError) {
     if (error.response) {
-      if (error.response.data.errorCode && client && client.party) {
+      const data = error?.response?.data as AxiosErrorResponseData;
+      if (data.errorCode && client && client.party) {
         client.party.sendMessage(
-          `HTTP Error: ${error.response.status} ${error.response.data.errorCode} ${error.response.data.errorMessage}`
+          `HTTP Error: ${error.response.status} ${data.errorCode} ${data.errorMessage}`
         );
       }
 
@@ -182,7 +184,8 @@ setUpDClient();
             }
           });
 
-        const mm = startMatchmaking(client, query, bLog, bIsMatchmaking);
+        // Initiate matchmaking websocket and its event listeners
+        startMatchmaking(client, query, bLog, bIsMatchmaking);
         break;
       }
 

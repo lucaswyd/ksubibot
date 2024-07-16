@@ -28,7 +28,7 @@
     "guild_slash_status_response": "",
     "command_guild": "",
     "status": "Fortnite",
-    "status_type": "PLAYING"
+    "status_type": 0
   },
 
   "system": {
