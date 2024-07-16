@@ -5,12 +5,7 @@ import {
   ApplicationCommandOptionType,
   ActivityType,
 } from "discord.js";
-import {
-  discord_status_type,
-  dologs,
-  discord_status,
-  displayName,
-} from "./Config.js";
+import { config } from "./Config.js";
 import { discordlog } from "./Helpers.js";
 
 console.log("[LOGS] Initializing Discord Client...");
@@ -27,14 +22,14 @@ export const dclient = new DClient({
 export function setUpDClient() {
   dclient.once("ready", () => {
     console.log("[DISCORD] client is online!");
-    if (dologs === true) {
-      discordlog("Bot status:", `${displayName} is now online!`, 0x00ff00);
+    if (config.logs.enable_logs === true) {
+      discordlog("Bot status:", `${config.logs.name} is now online!`, 0x00ff00);
     } else {
       console.log("[LOGS] disabled.");
     }
 
-    dclient.user?.setActivity(discord_status, {
-      type: discord_status_type as ActivityType,
+    dclient.user?.setActivity(config.discord.status, {
+      type: config.discord.status_type as ActivityType,
     });
 
     const commands = dclient.application?.commands;
@@ -229,6 +224,11 @@ export function setUpDClient() {
           type: ApplicationCommandOptionType.String,
         },
       ],
+    });
+
+    commands?.create({
+      name: "crash",
+      description: "Make the client dance",
     });
   });
 }

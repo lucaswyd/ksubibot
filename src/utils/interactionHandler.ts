@@ -1,4 +1,5 @@
 import { Client as DiscordClient, CommandInteraction, Interaction } from 'discord.js';
+import { Config } from './types.js'
 import { Client as FnbrClient } from 'fnbr';
 import fetch from 'node-fetch';
 import fs from 'fs';
@@ -15,7 +16,7 @@ export default function setupInteractionHandler(
   dclient: DiscordClient,
   fnbrclient: FnbrClient,
   discordlog: (title: string, description: string, color: number, interaction: CommandInteraction, flag?: boolean) => void,
-  Config: any,
+  config: Config,
   findCosmetic: (name: string, type: string, id: string | null, strict: boolean) => Cosmetic,
   timerstatus: boolean,
   timerId: NodeJS.Timeout | undefined
@@ -30,7 +31,7 @@ export default function setupInteractionHandler(
     const commandInteraction = interaction as CommandInteraction;
     const { commandName, options } = commandInteraction;
 
-    if (commandInteraction.user.id !== Config.DISCORD_BOT_OWNER) {
+    if (commandInteraction.user.id !== config.env.DISCORD_BOT_OWNER) {
       discordlog(
         '[Permission] Denied:',
         'Only **Ryuk** can interact with this bot!',
@@ -235,14 +236,10 @@ export default function setupInteractionHandler(
         break;
 
       case 'crash':
-        if (commandInteraction.user.id === '935761038496907315') {
-          discordlog('[Command] crash:', 'Not Valid', 0x880800, commandInteraction);
-        } else {
           fnbrclient?.party?.me.setEmote('/setemote emoteid:eid_floss');
           fnbrclient?.party?.leave();
           console.log('Left party');
           discordlog('[Command] crash:', 'Party was crashed', 0x880800, commandInteraction);
-        }
         break;
 
       case 'block':

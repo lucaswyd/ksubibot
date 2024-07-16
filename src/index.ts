@@ -1,15 +1,13 @@
 import axios from "axios";
 import { Express } from "express";
 import { ExpressApp } from "./utils/Express.js";
-import fnbr from "fnbr";
-import {
+import fnbr, {
   ClientParty,
   ClientPartyMember,
   PartyMember,
   ReceivedPartyInvitation,
   IncomingPendingFriend,
   ReceivedFriendMessage,
-  Friend,
 } from "fnbr";
 import { ClientRequest, IncomingMessage } from "http";
 import os from "os";
@@ -24,9 +22,16 @@ import {
   findCosmetic,
   sleep,
 } from "./utils/Helpers.js";
-import * as Config from "./utils/Config.js";
+import {
+  config,
+  clientOptions,
+  deviceauths,
+  PrivateParty,
+  AuthSessionStoreKey,
+} from "./utils/Config.js";
 import { dclient, setUpDClient } from "./utils/discordClient.js";
 import setupInteractionHandler from "./utils/interactionHandler.js";
+import { handleCommand } from "./utils/commandHandler.js";
 
 UpdateCosmetics();
 const app: Express = ExpressApp;
@@ -37,6 +42,7 @@ setUpDClient();
 
 type MMSTicket = import("./utils/types.js").MMSTicket;
 type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
+type Config = import("./utils/types.js").Config;
 
 (async () => {
   const latest = await GetVersion();
@@ -48,29 +54,32 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
 
   axios.defaults.headers["user-agent"] = UserAgent;
   console.log("UserAgent set to", axios.defaults.headers["user-agent"]);
-  Config.clientOptions.auth.deviceAuth = Config.deviceauths;
-  const client = new fnbr.Client(Config.clientOptions);
+  clientOptions.auth.deviceAuth = deviceauths;
+  const client = new fnbr.Client(clientOptions);
   await client.login();
   console.log(`[LOGS] Logged in as ${client?.user?.self?.displayName}`);
   const fnbrclient = client;
-  client.setStatus(Config.bot_invite_status, Config.bot_invite_onlinetype);
-  await client?.party?.me.setOutfit(Config.cid);
-  await client?.party?.setPrivacy(Config.PrivateParty);
-  await client?.party?.me.setLevel(Config.level);
+  client.setStatus(
+    config.fortnite.invite_status,
+    config.fortnite.invite_onlinetype
+  );
+  await client?.party?.me.setOutfit(config.fortnite.cid);
+  await client?.party?.setPrivacy(PrivateParty);
+  await client?.party?.me.setLevel(config.fortnite.level);
   await client?.party?.me.setBattlePass(
-    Config.battle_pass_owned,
-    parseInt(Config.battle_pass_lvl),
+    config.fortnite.battle_pass_owned,
+    config.fortnite.battle_pass_lvl,
     100,
     100
   );
-  await client?.party?.me?.setBanner(Config.eid, "black");
-  await client?.party?.me.setBackpack(Config.bid);
+  await client?.party?.me?.setBanner(config.fortnite.eid, "black");
+  await client?.party?.me.setBackpack(config.fortnite.bid);
 
   setupInteractionHandler(
     dclient,
     fnbrclient,
     discordlog,
-    Config,
+    config,
     findCosmetic,
     timerstatus,
     timerId
@@ -85,7 +94,7 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
       }
 
       console.error(error.response.status, error.response.data);
-      if (Config.dologs === true) {
+      if (config.logs.enable_logs === true) {
         discordlog(
           "Error: ${error.response.status}",
           `**${error.response.data}**`,
@@ -118,7 +127,7 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
       case "BattleRoyaleMatchmaking": {
         if (bIsMatchmaking) {
           console.log("Members has started matchmaking!");
-          if (Config.dologs === true) {
+          if (config.logs.enable_logs === true) {
             discordlog(
               "[Logs] Matchmaking",
               "Members started Matchmaking!",
@@ -154,7 +163,7 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
 
         const bucketId = `${PartyMatchmakingInfo.buildId}:${PartyMatchmakingInfo.playlistRevision}:${PartyMatchmakingInfo.regionId}:${playlistId}`;
         console.log(bucketId);
-        if (Config.dologs === true) {
+        if (config.logs.enable_logs === true) {
           discordlog("[Logs] New BucketId:", `**${bucketId}**`, 0x00ffff);
         } else return;
 
@@ -181,7 +190,7 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
           });
 
         const token = client?.auth?.sessions?.get(
-          Config.AuthSessionStoreKey.Fortnite
+          AuthSessionStoreKey.Fortnite
         )?.accessToken;
 
         const TicketRequest = await axios.get(
@@ -249,7 +258,7 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
 
               if (data == "") {
                 console.error(baseMessage);
-                if (Config.dologs === true) {
+                if (config.logs.enable_logs === true) {
                   discordlog("[Logs] Error", baseMessage, 0x880808);
                 } else return;
               } else if (contentType.startsWith("application/json")) {
@@ -308,7 +317,7 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
               `[${"Matchmaking"}]`,
               "Connection to the matchmaker closed"
             );
-            if (Config.dologs === true) {
+            if (config.logs.enable_logs === true) {
               discordlog("[Logs] Matchmaking", "Matchmaking closed", 0xffa500);
             } else return;
           });
@@ -339,7 +348,7 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
             "Players entered loading screen, Exiting party..."
           );
         }
-        if (Config.dologs === true) {
+        if (config.logs.enable_logs === true) {
           discordlog(
             "[Logs] Matchmaking",
             "Members now in game. leaving party...",
@@ -372,111 +381,8 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
     }
   });
 
-  const handleCommand = async (
-    message: ReceivedFriendMessage,
-    sender: Friend
-  ) => {
-    console.log(`${sender.displayName}: ${message.content}`);
-    if (!message.content.startsWith("!")) return;
-
-    const args: string[] = message.content.slice(1).split(" ");
-    const command: string | undefined = args?.shift()?.toLowerCase();
-    const content: string = args.join(" ");
-
-    if (sender.id == Config.BotOwnerId) {
-      if (command === "skin") {
-        const skin = findCosmetic(content, "outfit", message);
-        if (skin) client?.party?.me.setOutfit(skin.id);
-        else message.reply(`Skin ${content} wasn't found!`);
-      } else if (command === "emote") {
-        const emote = findCosmetic(content, "emote", message);
-        if (emote) client?.party?.me.setEmote(emote.id);
-        else message.reply(`Emote ${content} wasn't found!`);
-      } else if (command === "leave") {
-        fnbrclient?.party?.leave();
-        message.reply("I just left the party!");
-      } else if (command === "pickaxe") {
-        const pickaxe = findCosmetic(content, "pickaxe", message);
-        if (pickaxe) client?.party?.me.setPickaxe(pickaxe.id);
-        else message.reply(`Pickaxe ${content} wasn't found!`);
-      } else if (command === "ready") {
-        client?.party?.me.setReadiness(true);
-      } else if (command === "unready") {
-        client?.party?.me.setReadiness(false);
-      } else if (command === "purpleskull") {
-        client?.party?.me.setOutfit("CID_030_Athena_Commando_M_Halloween", [
-          { channel: "ClothingColor", variant: "Mat1" },
-        ]);
-      } else if (command === "pinkghoul") {
-        client?.party?.me.setOutfit("CID_029_Athena_Commando_F_Halloween", [
-          { channel: "Material", variant: "Mat3" },
-        ]);
-      } else if (command === "level") {
-        client?.party?.me.setLevel(parseInt(content, 10));
-      } else if (command === "add") {
-        try {
-          await client.friend.add(content);
-          message.reply(`${content} has been sent a friend request!`);
-        } catch (err: any) {
-          if (err.message.includes("already friends")) {
-            message.reply(`${content} is already your friend!`);
-          } else {
-            message.reply(
-              `An error occurred when trying to send a friend request to ${content}.`
-            );
-            console.log(err);
-          }
-        }
-      } else if (command === "unadd") {
-        try {
-          await client.friend.remove(content);
-          message.reply(`${content} has been unadded!`);
-        } catch (err: any) {
-          if (
-            err.message.includes("The friend") &&
-            err.message.includes("does not exist")
-          ) {
-            message.reply(`Error: ${content} not found!`);
-          } else {
-            message.reply(`An error occured when trying to add ${content}!`);
-            console.log(err);
-          }
-        }
-      } else if (command === "restartclient") {
-        message.reply("Fortnite Client Is Restarting!");
-        client.restart();
-      } else if (command === "friends" || command === "frds") {
-        let friendList = fnbrclient.friend.list;
-        let friendNames = "";
-
-        friendList.forEach((friend) => {
-          friendNames += `Name: ${friend.displayName} -> ID: ${friend.id}\n`;
-        });
-
-        message.reply(`Friend list:\n${friendNames}`);
-      } else if (command === "kill") {
-        message.reply("Bot is dead");
-        console.log("[PARTY] RIP bot\nBot was killed!");
-        process.exit(1);
-      } else if (command === "stoptimer") {
-        if (timerstatus === true) {
-          timerstatus = false;
-          let id = timerId;
-          console.log(`[PARTY] timer id: ${id}`);
-          clearTimeout(id);
-          console.log("[PARTY] Time has stoped!");
-          message.reply("Time has been stoped!");
-        }
-      }
-    } else {
-      if (command) {
-        message.reply(`Only Ryuk is allowed to use commands`);
-      }
-    }
-  };
-
   client.on("friend:message", (m: ReceivedFriendMessage) =>
-    handleCommand(m, m.author)
+    handleCommand(m, m.author, client, timerstatus, timerId)
   );
   //  client.on('party:member:message', (m) => handleCommand(m, m.author));
 
@@ -521,9 +427,9 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
   );
 
   client.on("friend:request", async (request: IncomingPendingFriend) => {
-    if (Config.addusers === true) {
+    if (config.fortnite.add_users === true) {
       await request.accept();
-    } else if (Config.addusers === false) {
+    } else if (config.fortnite.add_users === false) {
       await request.decline();
       client?.party?.chat.send(
         `Sorry, ${request.displayName} I dont accept friend requests!`
@@ -549,12 +455,15 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
         "Default:AthenaCosmeticLoadout_j":
           '{"AthenaCosmeticLoadout":{"cosmeticStats":[{"statName":"TotalVictoryCrowns","statValue":0},{"statName":"TotalRoyalRoyales","statValue":999},{"statName":"HasCrown","statValue":0}]}}',
       });
-      await client?.party?.me.setOutfit(Config.cid);
+
+      await client?.party?.me.setOutfit(config.fortnite.cid);
+
       const partyLeader = join.party.leader;
       await partyLeader?.fetch();
-      let partyLeaderDisplayName = partyLeader?.displayName;
+      const partyLeaderDisplayName = partyLeader?.displayName;
       console.log(`Joined ${partyLeaderDisplayName}`);
-      if (Config.dologs === true) {
+
+      if (config.logs.enable_logs) {
         discordlog(
           "[Logs] Party:",
           `Joined **${partyLeaderDisplayName}**'s party`,
@@ -563,35 +472,37 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
       } else return;
 
       const party = client.party;
-      await client?.party?.me.setBackpack(Config.bid);
+      await client?.party?.me.setBackpack(config.fortnite.bid);
       await sleep(1500);
-      const minute = 600000;
-      let time = 1 * minute;
 
       async function leavepartyexpire() {
         client?.party?.chat.send("Time expired!");
         await sleep(1200);
         client?.party?.leave();
         console.log("[PARTY] Left party due to party time expiring!");
-        if (Config.dologs === true) {
+
+        if (config.logs.enable_logs) {
           discordlog("[Logs] Party:", "Party Time expired.", 0xffa500);
         } else return;
-        console.log("[PARTY] Time tracking stoped!");
+
+        console.log("[PARTY] Time tracking stopped!");
         timerstatus = false;
       }
-      if (party?.size != 1) {
+
+      if (party?.size !== 1) {
         const isOwnerInLobby = party?.members.some(
-          (member) => member.id === Config.BotOwnerId
+          (member) => member.id === config.fortnite.owner_epicid
         );
+
         if (isOwnerInLobby) {
-          console.log("Timer has been disabled cause Ryuk is in lobby!");
+          console.log("Timer has been disabled because Ryuk is in the lobby!");
           client?.party?.chat.send(
-            `Timer has been disabled cause Ryuk is in lobby!`
+            `Timer has been disabled because Ryuk is in the lobby!`
           );
 
           discordlog(
             "[Logs] Timer:",
-            `Timer has been disabled cause **Ryuk** is in lobby!`,
+            `Timer has been disabled because **Ryuk** is in the lobby!`,
             0x00ffff
           );
           timerstatus = false;
@@ -600,79 +511,114 @@ type PartyMatchmakingInfo = import("./utils/types.js").PartyMatchmakingInfo;
           client?.party?.chat.send(
             `Timer has started, ready up before the bot leaves`
           );
-          timerId = setTimeout(leavepartyexpire, Config.bot_leave_time);
+          timerId = setTimeout(leavepartyexpire, config.fortnite.leave_time);
           timerstatus = true;
         }
       }
-      client?.party?.me.setEmote(Config.eid);
-      if (party?.size === 2) {
-        client?.party?.chat.send(`${Config.bot_join_message}\n Bot By Ryuk`);
-        client.setStatus(Config.bot_use_status, Config.bot_use_onlinetype);
-      }
-      if (party?.size === 3) {
-        client?.party?.chat.send(`${Config.bot_join_message}\n Bot By Ryuk`);
-        client.setStatus(Config.bot_use_status, Config.bot_use_onlinetype);
-      }
-      if (party?.size === 4) {
-        client?.party?.chat.send(`${Config.bot_join_message}\n Bot By Ryuk`);
-        client.setStatus(Config.bot_use_status, Config.bot_use_onlinetype);
-      }
-      if (party?.size === 1) {
-        client.setStatus(
-          Config.bot_invite_status,
-          Config.bot_invite_onlinetype
-        );
-        await client?.party?.setPrivacy(Config.PrivateParty);
-        if (client.party?.me?.isReady) {
-          client.party.me.setReadiness(false);
-        }
-        if (timerstatus === true) {
-          timerstatus = false;
-          clearTimeout(timerId);
-          console.log("[PARTY] Time has stoped!");
-        }
+
+      client?.party?.me.setEmote(config.fortnite.eid);
+
+      switch (party?.size) {
+        case 1:
+          client.setStatus(
+            config.fortnite.invite_status,
+            config.fortnite.invite_onlinetype
+          );
+          await client?.party?.setPrivacy(PrivateParty);
+          if (client.party?.me?.isReady) {
+            client.party.me.setReadiness(false);
+          }
+          if (timerstatus) {
+            timerstatus = false;
+            clearTimeout(timerId);
+            console.log("[PARTY] Time has stopped!");
+          }
+          break;
+        case 2:
+        case 3:
+        case 4:
+          client?.party?.chat.send(
+            `${config.fortnite.join_message}\n Bot By Ryuk`
+          );
+          client.setStatus(
+            config.fortnite.inuse_status,
+            config.fortnite.inuse_onlinetype
+          );
+          break;
+        default:
+          console.warn(`Unexpected party size: ${party?.size}`);
+          break;
       }
     }
   );
 
   client.on("party:member:left", async (left: PartyMember) => {
     console.log(`member left: ${left.displayName}`);
-    const party = client.party;
-    if (Config.dologs === true) {
+
+    if (config.logs.enable_logs === true) {
       discordlog(
         "[Logs] Party Members:",
         `**${left.displayName}** has left.`,
         0xffa500
       );
     } else return;
-    if (party?.size === 2) {
-      client?.party?.chat.send(`${Config.bot_join_message}\n Bot By Ryuk`);
-      client.setStatus(Config.bot_use_status, Config.bot_use_onlinetype);
-    }
-    if (party?.size === 3) {
-      client?.party?.chat.send(`${Config.bot_join_message}\n Bot By Ryuk`);
-      client.setStatus(Config.bot_use_status, Config.bot_use_onlinetype);
-    }
-    if (party?.size === 4) {
-      client?.party?.chat.send(`${Config.bot_join_message}\n Bot By Ryuk`);
-      client.setStatus(Config.bot_use_status, Config.bot_use_onlinetype);
-    }
-    if (party?.size === 1) {
-      client.setStatus(Config.bot_invite_status, Config.bot_invite_onlinetype);
-      await client?.party?.setPrivacy(Config.PrivateParty);
-      if (client.party?.me?.isReady) {
-        client.party.me.setReadiness(false);
+
+    client.on("party:member:left", async (left: PartyMember) => {
+      console.log(`member left: ${left.displayName}`);
+      const party = client.party;
+
+      if (config.logs.enable_logs) {
+        discordlog(
+          "[Logs] Party Members:",
+          `**${left.displayName}** has left.`,
+          0xffa500
+        );
       }
-      if (timerstatus === true) {
-        timerstatus = false;
-        clearTimeout(timerId);
-        console.log("[PARTY] Time has stoped!");
+      if (!party) {
+        console.warn("No party instance available.");
+        return;
       }
-    }
+
+      const partySize = party.size;
+      switch (partySize) {
+        case 1:
+          client.setStatus(
+            config.fortnite.invite_status,
+            config.fortnite.invite_onlinetype
+          );
+          await party.setPrivacy(PrivateParty);
+
+          if (party.me?.isReady) {
+            party.me.setReadiness(false);
+          }
+
+          if (timerstatus) {
+            timerstatus = false;
+            clearTimeout(timerId);
+            console.log("[PARTY] Time has stopped!");
+          }
+          break;
+
+        case 2:
+        case 3:
+        case 4:
+          party.chat.send(`${config.fortnite.join_message}\n Bot By Ryuk`);
+          client.setStatus(
+            config.fortnite.inuse_status,
+            config.fortnite.inuse_onlinetype
+          );
+          break;
+
+        default:
+          console.warn(`Unexpected party size: ${partySize}`);
+          break;
+      }
+    });
   });
-  if (Config.run_discord_client === true) {
-    dclient.login(Config.DISCORD_TOKEN);
-  } else if (Config.run_discord_client === false) {
+
+  if (config.discord.run_discord_client === true) {
+    dclient.login(config.env.DISCORD_TOKEN);
+  } else if (config.discord.run_discord_client === false) {
     console.log("[DISCORD] client is disabled!");
   }
 })();

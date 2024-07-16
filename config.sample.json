@@ -3,17 +3,18 @@
     "cid": "CID_416_Athena_Commando_M_AssassinSuit",
     "bid": "BID_244_DarkVikingFire",
     "eid": "",
-    "level": "69",
+    "level": 69,
     "battle_pass_owned": true,
-    "battle_pass_lvl": "1",
+    "battle_pass_lvl": 1,
     "banner": "",
     "add_users": true,
     "leave_time": 90000,
     "join_message": "",
     "invite_status": "",
-    "invite_onlinetype": "",
+    "invite_onlinetype": "online",
     "inuse_status": "",
-    "inuse_onlinetype": "online"
+    "inuse_onlinetype": "online",
+    "owner_epicid": ""
   },
 
   "logs": {
@@ -24,7 +25,6 @@
 
   "discord": {
     "run_discord_client": true,
-    "bot_owner_epicid": "",
     "guild_slash_status_response": "",
     "command_guild": "",
     "status": "Fortnite",

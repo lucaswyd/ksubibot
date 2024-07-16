@@ -23,7 +23,7 @@
 - **`level`**:
   - **Description**: The level of the battle pass.
   - **Format**: Number (as a string)
-  - **Example**: `"69"`
+  - **Example**: `69`
 
 - **`battle_pass_owned`**:
   - **Description**: Whether the battle pass is owned.
@@ -33,7 +33,7 @@
 - **`battle_pass_lvl`**:
   - **Description**: Current level of the battle pass.
   - **Format**: Number (as a string)
-  - **Example**: `"1"`
+  - **Example**: `1`
 
 - **`banner`**:
   - **Description**: Banner ID for the Fortnite banner. Leave empty if not used.
@@ -62,7 +62,7 @@
 
 - **`invite_onlinetype`**:
   - **Description**: Type of presence to show when inviting.
-  - **Format**: String (e.g., `"online"`, `"dnd"`)
+  - **Format**: String (e.g., `online`, `dnd`, `away`)
   - **Example**: `"online"`
 
 - **`inuse_status`**:
@@ -72,8 +72,13 @@
 
 - **`inuse_onlinetype`**:
   - **Description**: Type of presence to show when in use.
-  - **Format**: String (e.g., `"online"`, `"dnd"`)
+  - **Format**: String (e.g., `online`, `dnd`, `away`)
   - **Example**: `"online"`
+
+- **`owner_epicid`**:
+  - **Description**: Unique identifier for the bot owner in Epic Games.
+  - **Format**: String
+  - **Example**: `"a3f5b6d7e8c90f1b23456789ab0cdeff"`
 
 ### 2. `logs`
 
@@ -99,11 +104,6 @@
   - **Format**: Boolean (`true` or `false`)
   - **Example**: `true`
 
-- **`bot_owner_epicid`**:
-  - **Description**: Unique identifier for the bot owner in Epic Games.
-  - **Format**: String
-  - **Example**: `"231zer321zer32zer231zer"`
-
 - **`guild_slash_status_response`**:
   - **Description**: Response message for guild slash commands.
   - **Format**: String
@@ -120,9 +120,9 @@
   - **Example**: `"Fortnite"`
 
 - **`status_type`**:
-  - **Description**: Type of presence shown (e.g., "PLAYING", "WATCHING", "LISTENING").
-  - **Format**: String
-  - **Example**: `"PLAYING"`
+  - **Description**: Type of presence shown (e.g., 0 = "Playing", 1 = "Streaming", 2 = "Listening", 3 = "Watching", 4 = "Custom", 5 = Competing).
+  - **Format**: Number
+  - **Example**: `0`
 
 ### 4. `system`
 

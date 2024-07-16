@@ -1,5 +1,5 @@
 import { EmbedBuilder, ColorResolvable, CommandInteraction } from "discord.js";
-import { logchannel } from "./Config.js";
+import { config } from "./Config.js";
 import { dclient } from "./discordClient.js";
 import stringSimilarity from "string-similarity";
 import axios from "axios";
@@ -20,7 +20,7 @@ export async function discordlog(
   interaction: CommandInteraction | null = null,
   followup: boolean = false
 ): Promise<void> {
-  const channel = dclient.channels.cache.get(logchannel);
+  const channel = dclient.channels.cache.get(config.logs.channel);
   const logs = new EmbedBuilder()
     .setColor(color)
     .setTitle(title)
@@ -55,7 +55,8 @@ export async function calcChecksum(
     ticketPayload.slice(10, 20) + "Don'tMessWithMMS" + signature.slice(2, 10);
   const data = Buffer.from(plaintext, "utf16le");
   const sha1 = crypto.createHash("sha1").update(data).digest();
-  const checksum = sha1.slice(2, 10).toString("hex").toUpperCase();
+  const checksumBuffer = sha1.subarray(2, 10);
+  const checksum = checksumBuffer.toString("hex").toUpperCase();
   return checksum;
 }
 
