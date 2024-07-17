@@ -24,3 +24,7 @@ cd FNMM
 npm install
 npm run build
 npm run start
+```
+
+### Available Commands
+For a list of available in-game and Discord commands, refer to the [Commands Documentation](md/COMMANDS.md).

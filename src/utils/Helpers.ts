@@ -1,4 +1,5 @@
 import { EmbedBuilder, ColorResolvable, CommandInteraction } from "discord.js";
+import type { ReceivedFriendMessage } from "fnbr";
 import { config } from "./Config.js";
 import { dclient } from "./discordClient.js";
 import stringSimilarity from "string-similarity";
@@ -95,7 +96,7 @@ export async function UpdateCosmetics(): Promise<void> {
 export const findCosmetic = (
   query: string,
   type: string,
-  message: any,
+  message: ReceivedFriendMessage | null,
   discord: boolean | undefined = false
 ): any => {
   const queryLower = query.toLowerCase();
@@ -120,7 +121,7 @@ export const findCosmetic = (
       (c: any) => c.name.toLowerCase() === closestMatches.bestMatch.target
     );
     try {
-      message.reply(`Did you mean ${closestMatches.bestMatch.target}?`);
+      message?.reply(`Did you mean ${closestMatches.bestMatch.target}?`);
       return closestCosmetic;
     } catch (e) {
       return {
@@ -133,5 +134,5 @@ export const findCosmetic = (
 };
 
 export function stringToBool(value: string): boolean {
-  return value.toLowerCase() === 'true';
+  return value.toLowerCase() === "true";
 }

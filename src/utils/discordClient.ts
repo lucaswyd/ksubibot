@@ -100,7 +100,7 @@ export function setUpDClient() {
 
     commands?.create({
       name: "setemote",
-      description: "sets the clients emote with an id",
+      description: "sets the clients emote with an id/name",
       options: [
         {
           name: "emotename",
@@ -113,11 +113,45 @@ export function setUpDClient() {
 
     commands?.create({
       name: "setoutfit",
-      description: "sets an outfit with an id",
+      description: "sets an outfit with an id/name",
       options: [
         {
           name: "skinname",
           description: "name of the skin",
+          type: ApplicationCommandOptionType.String,
+        },
+      ],
+    });
+
+    commands?.create({
+      name: "setadvancedskin",
+      description: "sets a skin with style and variant",
+      options: [
+        {
+          name: "skin",
+          description: "name of the skin",
+          type: ApplicationCommandOptionType.String,
+        },
+        {
+          name: "style",
+          description: "name of the style",
+          type: ApplicationCommandOptionType.String,
+        },
+        {
+          name: "variant",
+          description: "name of the variant",
+          type: ApplicationCommandOptionType.String,
+        },
+      ],
+    });
+
+    commands?.create({
+      name: "setbackpack",
+      description: "sets an backpack with an id/name",
+      options: [
+        {
+          name: "backpack",
+          description: "name of the backpack",
           type: ApplicationCommandOptionType.String,
         },
       ],

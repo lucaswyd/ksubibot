@@ -1,4 +1,5 @@
 import { Client as DiscordClient, CommandInteraction, Interaction } from 'discord.js';
+import type { ReceivedFriendMessage } from "fnbr";
 import { Client as FnbrClient } from 'fnbr';
 import type { Config, Cosmetic } from "./types.js";
 import fetch from 'node-fetch';
@@ -21,7 +22,7 @@ export default function setupInteractionHandler(
   fnbrclient: FnbrClient,
   discordlog: (title: string, description: string, color: number, interaction: CommandInteraction, flag?: boolean) => void,
   config: Config,
-  findCosmetic: (name: string, type: string, id: string | null, strict: boolean) => Cosmetic,
+  findCosmetic: (query: string, type: string, message: ReceivedFriendMessage | null, discord?: boolean | undefined) => Cosmetic,
   timerstatus: boolean,
   timerId: NodeJS.Timeout | undefined
 ) {
@@ -118,6 +119,45 @@ export default function setupInteractionHandler(
               commandInteraction);
           } else {
             discordlog('[Command] Error:', `Skin **${skinname}** not found!`, 0x880800, commandInteraction);
+          }
+          break;
+
+        case 'setadvancedskin':
+          const advSkinName = options.get('skin')?.value as string;
+          const style = options.get('style')?.value as string;
+          const variant = options.get('variant')?.value as string;
+
+          if (advSkinName && style && variant) {
+            const skin = findCosmetic(advSkinName, 'outfit', null, true);
+            if (skin) {
+              await fnbrclient?.party?.me.setOutfit(skin.cosmeticmatch.id, [
+                { channel: style, variant: variant },
+              ]);
+              discordlog('[Command] setadvancedskin:', skin.exists
+                ? `Skin set to **${skin.cosmeticmatch.name}** with style **${style}** and variant **${variant}**!`
+                : `Skin **${advSkinName}** doesn't exist...\n\nBut match "**${skin.cosmeticmatch.name}**" with style **${style}** and variant **${variant}** has been set anyway!`,
+                skin.exists ? 0x00ff00 : 0xffa500,
+                commandInteraction);
+            } else {
+              discordlog('[Command] Error:', `Skin **${advSkinName}** not found!`, 0x880800, commandInteraction);
+            }
+          } else {
+            discordlog('[Command] Error:', `Invalid Syntax, Usage: !advskin <skin> <style> <variant>`, 0x880800, commandInteraction);
+          }
+          break;
+
+        case 'setbackpack':
+          const backpack = options.get('backpack')?.value as string;
+          const bp = backpack ? findCosmetic(backpack, 'backpack', null, true) : null;
+          if (bp) {
+            await fnbrclient?.party?.me.setBackpack(bp.cosmeticmatch.id);
+            discordlog('[Command] setbackpack:', bp.exists
+              ? `Backpack set to **${bp.cosmeticmatch.name}**!`
+              : `Backpack **${backpack}** doesn't exist...\n\nBut match "**${bp.cosmeticmatch.name}**" has been set anyway!`,
+              bp.exists ? 0x00ff00 : 0xffa500,
+              commandInteraction);
+          } else {
+            discordlog('[Command] Error:', `Backpack **${backpack}** not found!`, 0x880800, commandInteraction);
           }
           break;
 

@@ -7,7 +7,7 @@ function handleError(
   description: string,
   message: ReceivedFriendMessage
 ) {
-  const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+  const errorMessage = err instanceof Error ? err.message : "Unknown error";
   message.reply(`An error occurred: ${errorMessage}`);
   console.error(`[Command Error] ${description}:`, err);
 }
@@ -52,6 +52,31 @@ export const handleCommand = async (
           else message.reply(`Pickaxe ${content} wasn't found!`);
           break;
 
+        case "advskin":
+          const advskin = content.split(" ");
+          if (advskin.length >= 3) {
+            const skin = findCosmetic(advskin[0], "outfit", message);
+            if (skin) {
+              await client.party?.me.setOutfit(skin.id, [
+                { channel: advskin[1], variant: advskin[2] },
+              ]);
+            } else {
+              message.reply(`Skin ${advskin[0]} wasn't found!`);
+            }
+          } else {
+            message.reply(
+              `Invalid Syntax, Usage: !advskin <skin> <style> <variant>`
+            );
+          }
+          break;
+
+        case "bp":
+        case "backpack":
+          const backbling = findCosmetic(content, "backpack", message);
+          if (backbling) await client.party?.me.setBackpack(backbling.id);
+          else message.reply(`Backpack ${content} wasn't found!`);
+          break;
+
         case "ready":
           await client.party?.me.setReadiness(true);
           break;
@@ -61,15 +86,17 @@ export const handleCommand = async (
           break;
 
         case "purpleskull":
-          await client.party?.me.setOutfit("CID_030_Athena_Commando_M_Halloween", [
-            { channel: "ClothingColor", variant: "Mat1" },
-          ]);
+          await client.party?.me.setOutfit(
+            "CID_030_Athena_Commando_M_Halloween",
+            [{ channel: "ClothingColor", variant: "Mat1" }]
+          );
           break;
 
         case "pinkghoul":
-          await client.party?.me.setOutfit("CID_029_Athena_Commando_F_Halloween", [
-            { channel: "Material", variant: "Mat3" },
-          ]);
+          await client.party?.me.setOutfit(
+            "CID_029_Athena_Commando_F_Halloween",
+            [{ channel: "Material", variant: "Mat3" }]
+          );
           break;
 
         case "level":
@@ -156,7 +183,7 @@ export const handleCommand = async (
           break;
       }
     } catch (err) {
-      handleError(err, command ?? 'unknown command', message);
+      handleError(err, command ?? "unknown command", message);
     }
   } else {
     message.reply(`Only Ryuk is allowed to use commands`);
