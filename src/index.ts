@@ -82,15 +82,15 @@ setUpDClient();
       const data = error?.response?.data as AxiosErrorResponseData;
       if (data.errorCode && client && client.party) {
         client.party.sendMessage(
-          `HTTP Error: ${error.response.status} ${data.errorCode} ${data.errorMessage}`
+          `Axios HTTP Error: ${error.response.status} ${data.errorCode} ${data.errorMessage}`
         );
       }
 
       console.error(error.response.status, error.response.data);
       if (config.logs.enable_logs === true) {
         discordlog(
-          "Error: ${error.response.status}",
-          `**${error.response.data}**`,
+          `Axios Error: ${error.response.status}`,
+          `**${data.errorMessage}**`,
           0x880808
         );
       } else return;
