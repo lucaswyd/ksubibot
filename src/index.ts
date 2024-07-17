@@ -261,7 +261,10 @@ setUpDClient();
       await partyLeader?.fetch();
       const partyLeaderDisplayName = partyLeader?.displayName;
       const botDisplayName = client?.user?.self?.displayName;
-      const finalUsedDisplayName = partyLeaderDisplayName === botDisplayName ? `BOT ${botDisplayName}` : partyLeaderDisplayName;
+      const finalUsedDisplayName =
+        partyLeaderDisplayName === botDisplayName
+          ? `BOT ${botDisplayName}`
+          : partyLeaderDisplayName;
       console.log(`Joined ${finalUsedDisplayName}'s Party`);
 
       if (config.logs.enable_logs) {
@@ -291,19 +294,21 @@ setUpDClient();
       }
 
       if (party?.size !== 1) {
-        const isOwnerInLobby = party?.members.some(
-          (member) => member.id === config.fortnite.owner_epicid
+        const ownerInLobby = party?.members.find(
+          (member: ClientPartyMember | PartyMember) => member.id === config.fortnite.owner_epicid
         );
 
-        if (isOwnerInLobby) {
-          console.log("Timer has been disabled because Ryuk is in the lobby!");
+        if (ownerInLobby) {
+          console.log(
+            `Timer has been disabled because ${ownerInLobby.displayName} is in the lobby!`
+          );
           client?.party?.chat.send(
-            `Timer has been disabled because Ryuk is in the lobby!`
+            `Timer has been disabled because ${ownerInLobby.displayName} is in the lobby!`
           );
 
           discordlog(
             "[Logs] Timer:",
-            `Timer has been disabled because **Ryuk** is in the lobby!`,
+            `Timer has been disabled because **${ownerInLobby.displayName}** is in the lobby!`,
             0x00ffff
           );
           timerstatus = false;
