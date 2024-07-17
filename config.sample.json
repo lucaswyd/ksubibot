@@ -32,6 +32,7 @@
   },
 
   "system": {
+    "bot_owner_name": "Ryuk",
     "bot_loading_message": "Bot is loading!",
     "web_message": "use this for uptime",
     "version": "8.2.0"
