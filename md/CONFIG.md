@@ -126,6 +126,11 @@
 
 ### 4. `system`
 
+- **`bot_owner_name`**:
+  - **Description**: Bot owner name/username.
+  - **Format**: String
+  - **Example**: `"Ryuk"`
+
 - **`bot_loading_message`**:
   - **Description**: Message shown while the bot is loading.
   - **Format**: String

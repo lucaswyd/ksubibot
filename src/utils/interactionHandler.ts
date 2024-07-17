@@ -35,7 +35,7 @@ export default function setupInteractionHandler(
     const { commandName, options } = commandInteraction;
 
     if (commandInteraction.user.id !== config.env.DISCORD_BOT_OWNER) {
-      discordlog('[Permission] Denied:', 'Only **Ryuk** can interact with this bot!', 0x880808, commandInteraction);
+      discordlog('[Permission] Denied:', `Only **${config.system.bot_owner_name}** can interact with this bot!`, 0x880808, commandInteraction);
       return;
     }
 

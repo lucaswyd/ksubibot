@@ -317,6 +317,7 @@ export interface DiscordConfig {
 }
 
 export interface SystemConfig {
+  bot_owner_name: string;
   bot_loading_message: string;
   web_message: string;
   version: string;

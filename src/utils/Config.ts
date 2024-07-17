@@ -36,6 +36,7 @@ export const config: Config = {
     status_type: nconf.get("discord:status_type"),
   },
   system: {
+    bot_owner_name: nconf.get("system:bot_owner_name"),
     bot_loading_message: nconf.get("system:bot_loading_message"),
     web_message: nconf.get("system:web_message"),
     version: nconf.get("system:version"),

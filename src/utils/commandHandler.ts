@@ -186,6 +186,6 @@ export const handleCommand = async (
       handleError(err, command ?? "unknown command", message);
     }
   } else {
-    message.reply(`Only Ryuk is allowed to use commands`);
+    message.reply(`Only ${config.system.bot_owner_name} is allowed to use commands`);
   }
 };
