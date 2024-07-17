@@ -260,12 +260,14 @@ setUpDClient();
       const partyLeader = join.party.leader;
       await partyLeader?.fetch();
       const partyLeaderDisplayName = partyLeader?.displayName;
-      console.log(`Joined ${partyLeaderDisplayName}`);
+      const botDisplayName = client?.user?.self?.displayName;
+      const finalUsedDisplayName = partyLeaderDisplayName === botDisplayName ? `BOT ${botDisplayName}` : partyLeaderDisplayName;
+      console.log(`Joined ${finalUsedDisplayName}'s Party`);
 
       if (config.logs.enable_logs) {
         discordlog(
           "[Logs] Party:",
-          `Joined **${partyLeaderDisplayName}**'s party`,
+          `Joined **${finalUsedDisplayName}**'s party`,
           0x00ffff
         );
       } else return;
