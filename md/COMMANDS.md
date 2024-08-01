@@ -140,7 +140,7 @@ These commands are available for the Discord bot. To use a command, type the com
   - Updates the cosmetics JSON file from the Fortnite API.
 
 ## Notes
-Commands that require names (such as outfits, emotes, etc.) are not case-sensitive and can be slightly incorrect. For example, `!skin flos` will set "Floss" as the emote.
+Commands that require names (such as outfits, emotes, etc.) are not case-sensitive and can be slightly incorrect. For example, `!emote flos` will set "Floss" as the emote.
 
 ## Error Handling
 
