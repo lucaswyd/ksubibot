@@ -255,6 +255,20 @@ export default function setupInteractionHandler(
 
         break;
 
+        case 'readystate':
+          const readystate = options.get('state')?.value as boolean;
+          if (readystate === true) {
+              await fnbrclient?.party?.me.setReadiness(true)
+              discordlog("[Command] readystate:", `I am now ready`, 0x00FF00, commandInteraction)
+
+          } else if (readystate === false) {
+              await fnbrclient?.party?.me.setReadiness(false)
+              discordlog("[Command] readystate:", `I am now unready`, 0x880800, commandInteraction)
+          } else {
+            discordlog("[Command] readystate:", "Unknown readystate, please choose True or False", 0x880800, commandInteraction)
+          }
+        break;
+
         default:
           discordlog('[Command] Error:', 'Unknown command', 0x880800, commandInteraction);
           break;
