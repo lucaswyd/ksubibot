@@ -215,6 +215,10 @@ export async function startMatchmaking(
       });
     }
 
+    matchmakingClient.on("error", (err: string) => {
+      console.log(`[Matchmaking] Error: ${err}`);
+    })
+
     matchmakingClient.on("message", (msg: string) => {
       const message = JSON.parse(msg);
       if (bLog) {
