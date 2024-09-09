@@ -268,111 +268,121 @@ setUpDClient();
   client.on(
     "party:member:joined",
     async (join: PartyMember | ClientPartyMember) => {
-      client?.party?.me.sendPatch({
-        "Default:AthenaCosmeticLoadout_j":
-          '{"AthenaCosmeticLoadout":{"cosmeticStats":[{"statName":"TotalVictoryCrowns","statValue":0},{"statName":"TotalRoyalRoyales","statValue":999},{"statName":"HasCrown","statValue":0}]}}',
-      });
+      try {
+        client?.party?.me.sendPatch({
+          "Default:AthenaCosmeticLoadout_j":
+            '{"AthenaCosmeticLoadout":{"cosmeticStats":[{"statName":"TotalVictoryCrowns","statValue":0},{"statName":"TotalRoyalRoyales","statValue":999},{"statName":"HasCrown","statValue":0}]}}',
+        });
 
-      await client?.party?.me.setOutfit(config.fortnite.cid);
+        await client?.party?.me.setOutfit(config.fortnite.cid);
 
-      const partyLeader = join.party.leader;
-      await partyLeader?.fetch();
-      const partyLeaderDisplayName = partyLeader?.displayName;
-      const botDisplayName = client?.user?.self?.displayName;
-      const finalUsedDisplayName =
-        partyLeaderDisplayName === botDisplayName
-          ? `BOT ${botDisplayName}`
-          : partyLeaderDisplayName;
-      console.log(`Joined ${finalUsedDisplayName}'s Party`);
-
-      if (config.logs.enable_logs) {
-        discordlog(
-          "[Logs] Party:",
-          `Joined **${finalUsedDisplayName}**'s party`,
-          0x00ffff
-        );
-      } else return;
-
-      const party = client.party;
-      await client?.party?.me.setBackpack(config.fortnite.bid);
-      await sleep(1500);
-
-      async function leavepartyexpire() {
-        client?.party?.chat.send("Time expired!");
-        await sleep(1200);
-        client?.party?.leave();
-        console.log("[PARTY] Left party due to party time expiring!");
+        const partyLeader = join.party.leader;
+        await partyLeader?.fetch();
+        const partyLeaderDisplayName = partyLeader?.displayName;
+        const botDisplayName = client?.user?.self?.displayName;
+        const finalUsedDisplayName =
+          partyLeaderDisplayName === botDisplayName
+            ? `BOT ${botDisplayName}`
+            : partyLeaderDisplayName;
+        console.log(`Joined ${finalUsedDisplayName}'s Party`);
 
         if (config.logs.enable_logs) {
-          discordlog("[Logs] Party:", "Party Time expired.", 0xffa500);
-        } else return;
-
-        console.log("[PARTY] Time tracking stopped!");
-        timerstatus = false;
-      }
-
-      if (party?.size !== 1) {
-        const ownerInLobby = party?.members.find(
-          (member: ClientPartyMember | PartyMember) =>
-            member.id === config.fortnite.owner_epicid
-        );
-
-        if (ownerInLobby) {
-          console.log(
-            `Timer has been disabled because ${ownerInLobby.displayName} is in the lobby!`
-          );
-          client?.party?.chat.send(
-            `Timer has been disabled because ${ownerInLobby.displayName} is in the lobby!`
-          );
-
           discordlog(
-            "[Logs] Timer:",
-            `Timer has been disabled because **${ownerInLobby.displayName}** is in the lobby!`,
+            "[Logs] Party:",
+            `Joined **${finalUsedDisplayName}**'s party`,
             0x00ffff
           );
+        } else return;
+
+        const party = client.party;
+        await client?.party?.me.setBackpack(config.fortnite.bid);
+        await sleep(1500);
+
+        async function leavepartyexpire() {
+          client?.party?.chat.send("Time expired!");
+          await sleep(1200);
+          client?.party?.leave();
+          console.log("[PARTY] Left party due to party time expiring!");
+
+          if (config.logs.enable_logs) {
+            discordlog("[Logs] Party:", "Party Time expired.", 0xffa500);
+          } else return;
+
+          console.log("[PARTY] Time tracking stopped!");
           timerstatus = false;
-        } else {
-          console.log("[PARTY] Time has started!");
-          client?.party?.chat.send(
-            `Timer has started, ready up before the bot leaves`
-          );
-          timerId = setTimeout(leavepartyexpire, config.fortnite.leave_time);
-          timerstatus = true;
         }
-      }
 
-      client?.party?.me.setEmote(config.fortnite.eid);
-
-      switch (party?.size) {
-        case 1:
-          client.setStatus(
-            config.fortnite.invite_status,
-            config.fortnite.invite_onlinetype
+        if (party?.size !== 1) {
+          const ownerInLobby = party?.members.find(
+            (member: ClientPartyMember | PartyMember) =>
+              member.id === config.fortnite.owner_epicid
           );
-          await client?.party?.setPrivacy(PrivateParty);
-          if (client.party?.me?.isReady) {
-            client.party.me.setReadiness(false);
-          }
-          if (timerstatus) {
+
+          if (ownerInLobby) {
+            console.log(
+              `Timer has been disabled because ${ownerInLobby.displayName} is in the lobby!`
+            );
+            client?.party?.chat.send(
+              `Timer has been disabled because ${ownerInLobby.displayName} is in the lobby!`
+            );
+
+            discordlog(
+              "[Logs] Timer:",
+              `Timer has been disabled because **${ownerInLobby.displayName}** is in the lobby!`,
+              0x00ffff
+            );
             timerstatus = false;
-            clearTimeout(timerId);
-            console.log("[PARTY] Time has stopped!");
+          } else {
+            console.log("[PARTY] Time has started!");
+            client?.party?.chat.send(
+              `Timer has started, ready up before the bot leaves`
+            );
+            timerId = setTimeout(leavepartyexpire, config.fortnite.leave_time);
+            timerstatus = true;
           }
-          break;
-        case 2:
-        case 3:
-        case 4:
-          client?.party?.chat.send(
-            `${config.fortnite.join_message}\n Bot By Ryuk`
-          );
-          client.setStatus(
-            config.fortnite.inuse_status,
-            config.fortnite.inuse_onlinetype
-          );
-          break;
-        default:
-          console.warn(`Unexpected party size: ${party?.size}`);
-          break;
+        }
+
+        client?.party?.me.setEmote(config.fortnite.eid);
+
+        switch (party?.size) {
+          case 1:
+            client.setStatus(
+              config.fortnite.invite_status,
+              config.fortnite.invite_onlinetype
+            );
+            await client?.party?.setPrivacy(PrivateParty);
+            if (client.party?.me?.isReady) {
+              client.party.me.setReadiness(false);
+            }
+            if (timerstatus) {
+              timerstatus = false;
+              clearTimeout(timerId);
+              console.log("[PARTY] Time has stopped!");
+            }
+            break;
+          case 2:
+          case 3:
+          case 4:
+            client?.party?.chat.send(
+              `${config.fortnite.join_message}\n Bot By Ryuk`
+            );
+            client.setStatus(
+              config.fortnite.inuse_status,
+              config.fortnite.inuse_onlinetype
+            );
+            break;
+          default:
+            console.warn(`Unexpected party size: ${party?.size}`);
+            break;
+        }
+      } catch (e) {
+        console.log(e);
+        discordlog(
+          "[Logs] Party:",
+          `Failed to join party, leaving...`,
+          0x00ffff
+        );
+        try { await client?.party?.leave(); } catch (error) { console.error(error); } // prettier-ignore
       }
     }
   );
