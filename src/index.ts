@@ -226,22 +226,40 @@ setUpDClient();
   );
 
   client.on("friend:request", async (request: IncomingPendingFriend) => {
-    if (config.fortnite.add_users === true) {
-      await request.accept();
-    } else if (config.fortnite.add_users === false) {
-      await request.decline();
-      client?.party?.chat.send(
-        `Sorry, ${request.displayName} I dont accept friend requests!`
+    try {
+      if (config.fortnite.add_users === true) {
+        await request.accept();
+      } else if (config.fortnite.add_users === false) {
+        await request.decline();
+        client?.party?.chat.send(
+          `Sorry, ${request.displayName} I dont accept friend requests!`
+        );
+      }
+    } catch (e) {
+      console.log(e);
+      discordlog(
+        "[Logs] Friend Request:",
+        `Failed to accept friend request, please try again`,
+        0x880808
       );
     }
   });
 
   client.on("party:invite", async (request: ReceivedPartyInvitation) => {
-    const party = client.party;
-    if (party?.size === 1) {
-      await request.accept();
-    } else {
-      await request.decline();
+    try {
+      const party = client.party;
+      if (party?.size === 1) {
+        await request.accept();
+      } else {
+        await request.decline();
+      }
+    } catch (e) {
+      console.log(e);
+      discordlog(
+        "[Logs] Party Invite:",
+        `Failed to join Party, please try again`,
+        0x880808
+      );
     }
   });
 
@@ -295,7 +313,8 @@ setUpDClient();
 
       if (party?.size !== 1) {
         const ownerInLobby = party?.members.find(
-          (member: ClientPartyMember | PartyMember) => member.id === config.fortnite.owner_epicid
+          (member: ClientPartyMember | PartyMember) =>
+            member.id === config.fortnite.owner_epicid
         );
 
         if (ownerInLobby) {
