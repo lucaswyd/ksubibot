@@ -1,5 +1,7 @@
 import nconf from "nconf";
 nconf.argv().env().file({ file: "config.json" });
+import dotenv from 'dotenv';
+dotenv.config(); // loads .env variables if available
 import type { PartyPrivacy } from "fnbr";
 import type { Config } from "./types.js";
 

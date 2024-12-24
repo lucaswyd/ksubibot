@@ -6,16 +6,19 @@
   "scripts": {
     "start": "node .",
     "build": "tsc",
-    "dev": "npm run build && npm run start"
+    "dev": "npm run build && npm run start",
+    "win-dev": "powershell -ExecutionPolicy Bypass -Command . .\\env.pwsh; npm run start"
   },
   "dependencies": {
     "@discordjs/builders": "^1.8.2",
     "@discordjs/rest": "^2.3.0",
+    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.2",
     "colors": "^1.4.0",
     "crypto": "^1.0.1",
     "discord-api-types": "^0.37.92",
     "discord.js": "^14.15.3",
+    "dotenv": "^16.4.7",
     "express": "^4.19.2",
     "fnbr": "^4.0.0",
     "https-proxy-agent": "^7.0.5",

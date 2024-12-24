@@ -26,7 +26,7 @@ import {
 import { dclient, setUpDClient } from "./utils/discordClient.js";
 import setupInteractionHandler from "./utils/interactionHandler.js";
 import { handleCommand } from "./utils/commandHandler.js";
-import { startMatchmaking } from "./utils/matchmaking.js";
+import { startMatchmaking } from "./utils/Matchmaking.js";
 import type { AxiosErrorResponseData } from "./utils/types.js";
 
 UpdateCosmetics();
