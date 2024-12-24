@@ -290,7 +290,6 @@ setUpDClient();
         console.log(`Joined ${finalUsedDisplayName}'s Party`);
 
         if (config.logs.enable_logs) {
-          console.log(`Joined **${finalUsedDisplayName}**'s party`)
           discordlog(
             "[Logs] Party:",
             `Joined **${finalUsedDisplayName}**'s party`,
