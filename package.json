@@ -20,7 +20,7 @@
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.7",
     "express": "^4.19.2",
-    "fnbr": "^4.0.0",
+    "fnbr": "github:fnbrjs/fnbr.js",
     "https-proxy-agent": "^7.0.5",
     "nconf": "^0.12.1",
     "node": "^18.20.4",

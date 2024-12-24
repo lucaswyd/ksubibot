@@ -88,6 +88,8 @@ setUpDClient();
 
       console.error(error.response.status, error.response.data);
       if (config.logs.enable_logs === true) {
+        console.log(`Axios Error: ${error.response.status}`,
+          `**${data.errorMessage}**`);
         discordlog(
           `Axios Error: ${error.response.status}`,
           `**${data.errorMessage}**`,
@@ -148,6 +150,7 @@ setUpDClient();
           );
         }
         if (config.logs.enable_logs === true) {
+          console.log("Members now in game. leaving party...")
           discordlog(
             "[Logs] Matchmaking",
             "Members now in game. leaving party...",
@@ -287,6 +290,7 @@ setUpDClient();
         console.log(`Joined ${finalUsedDisplayName}'s Party`);
 
         if (config.logs.enable_logs) {
+          console.log(`Joined **${finalUsedDisplayName}**'s party`)
           discordlog(
             "[Logs] Party:",
             `Joined **${finalUsedDisplayName}**'s party`,

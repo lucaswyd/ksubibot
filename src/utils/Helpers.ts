@@ -21,6 +21,7 @@ export async function discordlog(
   interaction: CommandInteraction | null = null,
   followup: boolean = false
 ): Promise<void> {
+  if (!config.discord.run_discord_client) return;
   const channel = dclient.channels.cache.get(config.logs.channel);
   const logs = new EmbedBuilder()
     .setColor(color)
@@ -56,7 +57,7 @@ export async function calcChecksum(
     ticketPayload.slice(10, 20) +
     Buffer.from("RG9uJ3RNZXNzV2l0aE1NUw==", "base64").toString("utf-8") +
     signature.slice(2, 10);
-  const data = Buffer.from(plaintext, "utf16le");
+  const data: any = Buffer.from(plaintext, "utf16le");
   const sha1 = crypto.createHash("sha1").update(data).digest();
   const checksumBuffer = sha1.subarray(2, 10);
   const checksum = checksumBuffer.toString("hex").toUpperCase();

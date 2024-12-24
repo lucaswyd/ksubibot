@@ -69,6 +69,7 @@ export async function startMatchmaking(
     const bucketId = `${PartyMatchmakingInfo.buildId}:${PartyMatchmakingInfo.playlistRevision}:${PartyMatchmakingInfo.regionId}:${playlistId}`;
     console.log(bucketId);
     if (config.logs.enable_logs === true) {
+      console.log("[Logs] New BucketId:", `**${bucketId}**`)
       discordlog("[Logs] New BucketId:", `**${bucketId}**`, 0x00ffff);
     } else return;
 
