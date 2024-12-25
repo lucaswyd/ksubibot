@@ -57,7 +57,7 @@ export async function startMatchmaking(
       console.log("Unsupported playlist", playlistId);
       client?.party?.chat.send(
         `Playlist id: ${playlistId} is not a supported gamemode!`
-      );
+      ).catch((e) => console.log(e));
       client?.party?.me.setReadiness(false);
       return;
     }
@@ -148,7 +148,7 @@ export async function startMatchmaking(
 
           client?.party?.chat.send(
             `Error while connecting to matchmaking service: (status ${response.statusCode} ${response.statusMessage})`
-          );
+          ).catch((e) => console.log(e));
 
           const contentType = response.headers["content-type"] ?? "error";
 
@@ -162,15 +162,13 @@ export async function startMatchmaking(
 
             if (jsonData.errorCode) {
               console.error(
-                `${baseMessage}, ${jsonData.errorCode} ${
-                  jsonData.errorMessage || ""
+                `${baseMessage}, ${jsonData.errorCode} ${jsonData.errorMessage || ""
                 }`
               );
               client?.party?.chat.send(
-                `Error while connecting to matchmaking service: ${
-                  jsonData.errorCode
+                `Error while connecting to matchmaking service: ${jsonData.errorCode
                 } ${jsonData.errorMessage || ""}`
-              );
+              ).catch((e) => console.log(e));
             } else {
               console.error(`${baseMessage} response body: ${data}`);
             }

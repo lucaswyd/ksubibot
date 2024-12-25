@@ -236,7 +236,7 @@ setUpDClient();
         await request.decline();
         client?.party?.chat.send(
           `Sorry, ${request.displayName} I dont accept friend requests!`
-        );
+        ).catch((e) => console.log(e));
       }
     } catch (e) {
       console.log(e);
@@ -302,7 +302,7 @@ setUpDClient();
         await sleep(1500);
 
         async function leavepartyexpire() {
-          client?.party?.chat.send("Time expired!");
+          client?.party?.chat.send("Time expired!").catch((e) => console.log(e));
           await sleep(1200);
           client?.party?.leave();
           console.log("[PARTY] Left party due to party time expiring!");
@@ -327,7 +327,7 @@ setUpDClient();
             );
             client?.party?.chat.send(
               `Timer has been disabled because ${ownerInLobby.displayName} is in the lobby!`
-            );
+            ).catch((e) => console.log(e));
 
             discordlog(
               "[Logs] Timer:",
@@ -339,7 +339,7 @@ setUpDClient();
             console.log("[PARTY] Time has started!");
             client?.party?.chat.send(
               `Timer has started, ready up before the bot leaves`
-            );
+            ).catch((e) => console.log(e));
             timerId = setTimeout(leavepartyexpire, config.fortnite.leave_time);
             timerstatus = true;
           }
@@ -368,7 +368,7 @@ setUpDClient();
           case 4:
             client?.party?.chat.send(
               `${config.fortnite.join_message}\n Bot By Ryuk`
-            );
+            ).catch((e) => console.log(e));
             client.setStatus(
               config.fortnite.inuse_status,
               config.fortnite.inuse_onlinetype
@@ -440,7 +440,7 @@ setUpDClient();
         case 2:
         case 3:
         case 4:
-          party.chat.send(`${config.fortnite.join_message}\n Bot By Ryuk`);
+          party.chat.send(`${config.fortnite.join_message}\n Bot By Ryuk`).catch((e) => console.log(e));
           client.setStatus(
             config.fortnite.inuse_status,
             config.fortnite.inuse_onlinetype

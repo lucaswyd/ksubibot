@@ -200,7 +200,7 @@ export default function setupInteractionHandler(
           if (!message) {
             discordlog('[Command] sendpartychatmessage:', 'No message provided', 0x880800, commandInteraction);
           } else {
-            await fnbrclient?.party?.chat.send(message);
+            await fnbrclient?.party?.chat.send(message).catch((e) => console.log(e));
             discordlog('[Command] sendpartychatmessage:', `**${message}** has been sent in the party chat!`, 0x00ff00, commandInteraction);
           }
           break;
@@ -232,8 +232,8 @@ export default function setupInteractionHandler(
             discordlog('[Command] block:', `**${blockuser}** has been blocked!`, 0xffa500, commandInteraction);
           } else {
             discordlog('[Command] block:', 'No user to block provided', 0x880800, commandInteraction);
-        }
-        break;
+          }
+          break;
 
         case 'unblock':
           const unblockuser = options.get('usertounblock')?.value as string;
@@ -243,7 +243,7 @@ export default function setupInteractionHandler(
           } else {
             discordlog('[Command] unblock:', 'No user to unblock provided', 0x880800, commandInteraction);
           }
-        break;
+          break;
 
         case 'cosmetics':
           const url = 'https://fortnite-api.com/v2/cosmetics/br';
@@ -253,21 +253,21 @@ export default function setupInteractionHandler(
           fs.writeFileSync(filePath, JSON.stringify(json.data, null, 2));
           discordlog('[Command] cosmetics:', 'Cosmetics JSON file has been updated from Fortnite API', 0x00ff00, commandInteraction);
 
-        break;
+          break;
 
         case 'readystate':
           const readystate = options.get('state')?.value as boolean;
           if (readystate === true) {
-              await fnbrclient?.party?.me.setReadiness(true)
-              discordlog("[Command] readystate:", `I am now ready`, 0x00FF00, commandInteraction)
+            await fnbrclient?.party?.me.setReadiness(true)
+            discordlog("[Command] readystate:", `I am now ready`, 0x00FF00, commandInteraction)
 
           } else if (readystate === false) {
-              await fnbrclient?.party?.me.setReadiness(false)
-              discordlog("[Command] readystate:", `I am now unready`, 0x880800, commandInteraction)
+            await fnbrclient?.party?.me.setReadiness(false)
+            discordlog("[Command] readystate:", `I am now unready`, 0x880800, commandInteraction)
           } else {
             discordlog("[Command] readystate:", "Unknown readystate, please choose True or False", 0x880800, commandInteraction)
           }
-        break;
+          break;
 
         default:
           discordlog('[Command] Error:', 'Unknown command', 0x880800, commandInteraction);
