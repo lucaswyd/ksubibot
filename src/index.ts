@@ -56,7 +56,7 @@ setUpDClient();
     config.fortnite.invite_onlinetype
   );
   await client?.party?.me.setOutfit(config.fortnite.cid);
-  await client?.party?.setPrivacy(PrivateParty);
+  await client?.party?.setPrivacy(PrivateParty).catch((e) => console.log(e));
   await client?.party?.me.setLevel(config.fortnite.level);
   await client?.party?.me.setBattlePass(
     config.fortnite.battle_pass_owned,
@@ -143,6 +143,7 @@ setUpDClient();
       }
 
       case "BattleRoyalePostMatchmaking": {
+        if (!bIsMatchmaking) return;
         if (bLog) {
           console.log(
             `[${"Party"}]`,
@@ -159,10 +160,15 @@ setUpDClient();
         } else return;
 
         if (client.party?.me?.isReady) {
+          console.log("trying to set ready to false")
           client.party.me.setReadiness(false);
+          console.log("set ready to false")
         }
+        await sleep(2000);
         bIsMatchmaking = false;
+        console.log("trying to leave")
         client?.party?.leave();
+        console.log("left")
         break;
       }
 
@@ -250,6 +256,8 @@ setUpDClient();
 
   client.on("party:invite", async (request: ReceivedPartyInvitation) => {
     try {
+      console.log("Received party invite")
+      await client.party?.fetch();
       const party = client.party;
       if (party?.size === 1) {
         await request.accept();
@@ -272,12 +280,21 @@ setUpDClient();
     "party:member:joined",
     async (join: PartyMember | ClientPartyMember) => {
       try {
+        // workaround for some patch delay errors
+        await sleep(2000);
+
+        await client?.party?.me.fetch();
+
         client?.party?.me.sendPatch({
           "Default:AthenaCosmeticLoadout_j":
             '{"AthenaCosmeticLoadout":{"cosmeticStats":[{"statName":"TotalVictoryCrowns","statValue":0},{"statName":"TotalRoyalRoyales","statValue":999},{"statName":"HasCrown","statValue":0}]}}',
+        }).catch(err => {
+          console.log(err);
         });
 
-        await client?.party?.me.setOutfit(config.fortnite.cid);
+        await client?.party?.me.setOutfit(config.fortnite.cid).catch(err => {
+          console.log(err);
+        });
 
         const partyLeader = join.party.leader;
         await partyLeader?.fetch();
@@ -302,17 +319,27 @@ setUpDClient();
         await sleep(1500);
 
         async function leavepartyexpire() {
-          client?.party?.chat.send("Time expired!").catch((e) => console.log(e));
-          await sleep(1200);
-          client?.party?.leave();
-          console.log("[PARTY] Left party due to party time expiring!");
+          try {
+            client?.party?.chat.send("Time expired!").catch((e) => console.log(e));
+            await sleep(1200);
+            client?.party?.leave();
+            console.log("[PARTY] Left party due to party time expiring!");
 
-          if (config.logs.enable_logs) {
-            discordlog("[Logs] Party:", "Party Time expired.", 0xffa500);
-          } else return;
+            if (config.logs.enable_logs) {
+              discordlog("[Logs] Party:", "Party Time expired.", 0xffa500);
+            } else return;
 
-          console.log("[PARTY] Time tracking stopped!");
-          timerstatus = false;
+            console.log("[PARTY] Time tracking stopped!");
+            timerstatus = false;
+          } catch (e) {
+            console.log(e);
+            discordlog(
+              "[Logs] Party:",
+              `Failed to leave party due to an error`,
+              0x880808
+            );
+          }
+
         }
 
         if (party?.size !== 1) {
@@ -345,7 +372,9 @@ setUpDClient();
           }
         }
 
-        client?.party?.me.setEmote(config.fortnite.eid);
+        await client?.party?.fetch();
+
+        // client?.party?.me.setEmote(config.fortnite.eid);
 
         switch (party?.size) {
           case 1:
@@ -353,7 +382,7 @@ setUpDClient();
               config.fortnite.invite_status,
               config.fortnite.invite_onlinetype
             );
-            await client?.party?.setPrivacy(PrivateParty);
+            await client?.party?.setPrivacy(PrivateParty).catch((e) => console.log(e));
             if (client.party?.me?.isReady) {
               client.party.me.setReadiness(false);
             }
@@ -417,6 +446,7 @@ setUpDClient();
         return;
       }
 
+      await party.fetch();
       const partySize = party.size;
       switch (partySize) {
         case 1:
@@ -424,7 +454,7 @@ setUpDClient();
             config.fortnite.invite_status,
             config.fortnite.invite_onlinetype
           );
-          await party.setPrivacy(PrivateParty);
+          await party.setPrivacy(PrivateParty).catch((e) => console.log(e));
 
           if (party.me?.isReady) {
             party.me.setReadiness(false);
