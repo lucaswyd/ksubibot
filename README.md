@@ -30,6 +30,6 @@ npm run start
 For a list of available in-game and Discord commands, refer to the [Commands Documentation](md/COMMANDS.md).
 
 ## Credits:
-Orignal code by: AjaxFNC
-Discord: [NexBL](https://discord.gg/nexbl)
-Note: Please do not request support in this discord server
+- Orignal code by: AjaxFNC
+- Discord: [NexBL](https://discord.gg/nexbl)
+- *Note: Please do not request support in this discord server
