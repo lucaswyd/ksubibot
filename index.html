@@ -1,24 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Full Screen Iframe</title>
-    <style>
-        /* Make the iframe cover the entire screen */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ksubibot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jacquard+24&display=swap" rel="stylesheet">
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    section {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-image: url('https://preview.redd.it/original-in-the-air-photo-v0-v5yx6i293yy91.png?auto=webp&s=e69d968eb6a04936881eeaed12c18866fa9587d4'); /* Your image URL */
+      background-size: cover; /* Ensure the image covers the whole background */
+      background-position: center; /* Position the image in the center */
+      background-repeat: no-repeat; /* Prevent the image from repeating */
+      filter: brightness(40%); /* Apply brightness filter to the background image */
+    }
+
+    /* Title */
+    .title {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 8rem; /* Make the text much bigger */
+      font-weight: bold;
+      color: #ff1e65; /* Text color */
+      text-shadow: 
+        0 0 5px rgba(0, 0, 0, 0.2), 
+        0 0 10px rgba(0, 0, 0, 0.2), 
+        0 0 20px rgba(0, 0, 0, 0.2), 
+        0 0 30px rgba(0, 0, 0, 0.2), 
+        0 0 40px rgba(0, 0, 0, 0.2), 
+        0 0 50px rgba(0, 0, 0, 0.2), 
+        0 0 75px rgba(0, 0, 0, 0.2); /* Glowing effect */
+      z-index: 10;
+      animation: glowPulse 2s infinite alternate;
+      font-family: 'Jacquard 24', sans-serif; /* Applying the custom font */
+      filter: brightness(100%); /* Full brightness for the text */
+    }
+
+    /* Glowing Effect Animation */
+    @keyframes glowPulse {
+      0% {
+        text-shadow: 
+          0 0 5px rgba(0, 0, 0, 0.2), 
+          0 0 10px rgba(0, 0, 0, 0.2), 
+          0 0 20px rgba(0, 0, 0, 0.2), 
+          0 0 30px rgba(0, 0, 0, 0.2), 
+          0 0 40px rgba(0, 0, 0, 0.2), 
+          0 0 50px rgba(0, 0, 0, 0.2), 
+          0 0 75px rgba(0, 0, 0, 0.2);
+      }
+      100% {
+        text-shadow: 
+          0 0 10px rgba(0, 0, 0, 0.2), 
+          0 0 20px rgba(0, 0, 0, 0.2), 
+          0 0 30px rgba(0, 0, 0, 0.2), 
+          0 0 40px rgba(0, 0, 0, 0.2), 
+          0 0 60px rgba(0, 0, 0, 0.2), 
+          0 0 80px rgba(0, 0, 0, 0.2), 
+          0 0 100px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 4px;
+      height: 4px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1), 0 0 0 8px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 0.1);
+      animation: animate 3s linear infinite;
+    }
+
+    span::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 300px;
+      height: 1px;
+      background: linear-gradient(90deg, #fff, transparent);
+    }
+
+    @keyframes animate {
+      0% {
+        transform: rotate(315deg) translateX(0);
+        opacity: 1;
+      }
+      70% {
+        opacity: 1;
+      }
+      100% {
+        transform: rotate(315deg) translateX(-1000px);
+        opacity: 0;
+      }
+    }
+
+    span:nth-child(1) {
+      top: 0;
+      right: 0;
+      left: initial;
+      animation-delay: 0s;
+      animation-duration: 1s;
+    }
+    span:nth-child(2) {
+      top: 0;
+      right: 80px;
+      left: initial;
+      animation-delay: 0.2s;
+      animation-duration: 3s;
+    }
+    span:nth-child(3) {
+      top: 80;
+      right: 0px;
+      left: initial;
+      animation-delay: 0.4s;
+      animation-duration: 2s;
+    }
+    span:nth-child(4) {
+      top: 0;
+      right: 180px;
+      left: initial;
+      animation-delay: 0.6s;
+      animation-duration: 1.5s;
+    }
+    span:nth-child(5) {
+      top: 0;
+      right: 400px;
+      left: initial;
+      animation-delay: 0.8s;
+      animation-duration: 2.5s;
+    }
+    span:nth-child(6) {
+      top: 0;
+      right: 600px;
+      left: initial;
+      animation-delay: 1s;
+      animation-duration: 3s;
+    }
+    span:nth-child(7) {
+      top: 300px;
+      right: 0px;
+      left: initial;
+      animation-delay: 1.2s;
+      animation-duration: 1.75s;
+    }
+    span:nth-child(8) {
+      top: 0px;
+      right: 700px;
+      left: initial;
+      animation-delay: 1.4s;
+      animation-duration: 1.25s;
+    }
+    span:nth-child(9) {
+      top: 0px;
+      right: 1000px;
+      left: initial;
+      animation-delay: 0.75s;
+      animation-duration: 2.25s;
+    }
+    span:nth-child(10) {
+      top: 0px;
+      right: 450px;
+      left: initial;
+      animation-delay: 2.75s;
+      animation-duration: 2.75s;
+    }
+
+  </style>
 </head>
 <body>
-    <iframe src="https://dc5ed098-81ed-4276-bc31-d2375921231c-00-1yacslf7d2ijq.picard.replit.dev:3000" allowfullscreen></iframe>
+  <section>
+    <div class="title">ksubibot</div>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </section>
 </body>
 </html>
